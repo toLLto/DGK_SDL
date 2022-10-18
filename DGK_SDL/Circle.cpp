@@ -19,10 +19,22 @@ void Circle::handleEvent(SDL_Event& e)
 		//Adjust the velocity
 		switch (e.key.keysym.sym)
 		{
-		case SDLK_UP: mVelY -= CIRCLE_VEL; break;
-		case SDLK_DOWN: mVelY += CIRCLE_VEL; break;
-		case SDLK_LEFT: mVelX -= CIRCLE_VEL; break;
-		case SDLK_RIGHT: mVelX += CIRCLE_VEL; break;
+		case SDLK_UP: 
+			mVelY -= CIRCLE_VEL; 
+			SDL_Log("Up was pressed");
+			break;
+		case SDLK_DOWN: 
+			mVelY += CIRCLE_VEL; 
+			SDL_Log("Down was pressed");
+			break;
+		case SDLK_LEFT: 
+			mVelX -= CIRCLE_VEL; 
+			SDL_Log("Left was pressed");
+			break;
+		case SDLK_RIGHT: 
+			mVelX += CIRCLE_VEL; 
+			SDL_Log("Right was pressed");
+			break;
 		}
 	}
 	//If a key was released
@@ -31,10 +43,22 @@ void Circle::handleEvent(SDL_Event& e)
 		//Adjust the velocity
 		switch (e.key.keysym.sym)
 		{
-		case SDLK_UP: mVelY = 0; break;
-		case SDLK_DOWN: mVelY = 0; break;
-		case SDLK_LEFT: mVelX = 0; break;
-		case SDLK_RIGHT: mVelX = 0; break;
+		case SDLK_UP: 
+			mVelY = 0; 
+			SDL_Log("Up was released");
+			break;
+		case SDLK_DOWN: 
+			mVelY = 0; 
+			SDL_Log("Down was released");
+			break;
+		case SDLK_LEFT: 
+			mVelX = 0; 
+			SDL_Log("Left was released");
+			break;
+		case SDLK_RIGHT: 
+			mVelX = 0; 
+			SDL_Log("Right was released");
+			break;
 		}
 	}
 }

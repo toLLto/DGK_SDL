@@ -166,10 +166,16 @@ int main(int argc, char* args[])
 
 					//Handle input for the dot
 					circle.handleEvent(e);
+
+					//Handle input for the Square
+					square.handleEvent(e);
 				}
 
 				//Move the dot
 				circle.move(SCREEN_WIDTH, SCREEN_HEIGHT);
+
+				//Move the square
+				square.move(SCREEN_WIDTH, SCREEN_HEIGHT);
 
 				//Clear screen
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
