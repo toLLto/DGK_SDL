@@ -6,22 +6,42 @@ and may not be redistributed without written permission.*/
 #include <SDL_image.h>
 #include <stdio.h>
 #include <string>
+#include <fstream>
 #include "Texture.h"
 #include "Circle.h"
 #include "Square.h"
+#include "Tile.h"
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 760;
+const int SCREEN_HEIGHT = 720;
+
+//The dimensions of the level
+const int LEVEL_WIDTH = 760;
+const int LEVEL_HEIGHT = 720;
+
+//Tile constants
+const int TILE_WIDTH = 40;
+const int TILE_HEIGHT = 40;
+const int TOTAL_TILES = 342;
+const int TOTAL_TILE_SPRITES = 3;
+
+//The different tile sprites
+const int TILE_RED = 0;
+const int TILE_BLACK = 1;
+const int TILE_BROWN = 2;
 
 //Starts up SDL and creates window
 bool init();
 
 //Loads media
-bool loadMedia();
+bool loadMedia(Tile* tiles[]);
+
+//Sets tiles from tile map
+bool setTiles(Tile* tiles[]);
 
 //Frees media and shuts down SDL
-void close();
+void close(Tile* tiles[]);
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
@@ -31,7 +51,8 @@ SDL_Renderer* gRenderer = NULL;
 
 //Scene textures
 Texture gCircleTexture;
-Texture gSquareTexture;
+Texture gTileTexture;
+SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
 
 bool init()
 {
@@ -87,33 +108,50 @@ bool init()
 	return success;
 }
 
-bool loadMedia()
+bool loadMedia(Tile* tiles[])
 {
 	//Loading success flag
 	bool success = true;
 
-	//Load dot texture
+	//Load circle texture
 	if (!gCircleTexture.loadFromFile("dot.bmp", gRenderer))
 	{
 		printf("Failed to load dot texture!\n");
 		success = false;
 	}
 
-	//Load square texture
-	if (!gSquareTexture.loadFromFile("square.bmp", gRenderer))
+	//Load tile texture
+	if (!gTileTexture.loadFromFile("tiles.png", gRenderer))
 	{
 		printf("Failed to load square texture!\n");
+		success = false;
+	}
+
+	//Load tile map
+	if (!setTiles(tiles))
+	{
+		printf("Failed to load tile set!\n");
 		success = false;
 	}
 
 	return success;
 }
 
-void close()
+void close(Tile* tiles[])
 {
+	//Deallocate tiles
+	for (int i = 0; i < TOTAL_TILES; ++i)
+	{
+		if (tiles[i] != NULL)
+		{
+			delete tiles[i];
+			tiles[i] = NULL;
+		}
+	}
+
 	//Free loaded images
 	gCircleTexture.free();
-	gSquareTexture.free();
+	gTileTexture.free();
 
 	//Destroy window	
 	SDL_DestroyRenderer(gRenderer);
@@ -126,6 +164,98 @@ void close()
 	SDL_Quit();
 }
 
+bool setTiles(Tile* tiles[])
+{
+	//Success flag
+	bool tilesLoaded = true;
+
+	//The tile offsets
+	int x = 0, y = 0;
+
+	//Open the map
+	std::ifstream map("map.map");
+
+	//If the map couldn't be loaded
+	if (map.fail())
+	{
+		printf("Unable to load map file!\n");
+		tilesLoaded = false;
+	}
+	else
+	{
+		//Initialize the tiles
+		for (int i = 0; i < TOTAL_TILES; ++i)
+		{
+			//Determines what kind of tile will be made
+			int tileType = -1;
+
+			//Read tile from map file
+			map >> tileType;
+
+			//If the was a problem in reading the map
+			if (map.fail())
+			{
+				//Stop loading map
+				printf("Error loading map: Unexpected end of file!\n");
+				tilesLoaded = false;
+				break;
+			}
+
+			//If the number is a valid tile number
+			if ((tileType >= 0) && (tileType < TOTAL_TILE_SPRITES))
+			{
+				tiles[i] = new Tile(x, y, tileType);
+			}
+			//If we don't recognize the tile type
+			else
+			{
+				//Stop loading map
+				printf("Error loading map: Invalid tile type at %d!\n", i);
+				tilesLoaded = false;
+				break;
+			}
+
+			//Move to next tile spot
+			x += TILE_WIDTH;
+
+			//If we've gone too far
+			if (x >= LEVEL_WIDTH)
+			{
+				//Move back
+				x = 0;
+
+				//Move to the next row
+				y += TILE_HEIGHT;
+			}
+		}
+
+		//Clip the sprite sheet
+		if (tilesLoaded)
+		{
+			gTileClips[TILE_RED].x = 0;
+			gTileClips[TILE_RED].y = 0;
+			gTileClips[TILE_RED].w = TILE_WIDTH;
+			gTileClips[TILE_RED].h = TILE_HEIGHT;
+
+			gTileClips[TILE_BLACK].x = 0;
+			gTileClips[TILE_BLACK].y = 40;
+			gTileClips[TILE_BLACK].w = TILE_WIDTH;
+			gTileClips[TILE_BLACK].h = TILE_HEIGHT;
+
+			gTileClips[TILE_BROWN].x = 0;
+			gTileClips[TILE_BROWN].y = 80;
+			gTileClips[TILE_BROWN].w = TILE_WIDTH;
+			gTileClips[TILE_BROWN].h = TILE_HEIGHT;
+		}
+	}
+
+	//Close the file
+	map.close();
+
+	//If the map was loaded fine
+	return tilesLoaded;
+}
+
 int main(int argc, char* args[])
 {
 	//Start up SDL and create window
@@ -135,8 +265,11 @@ int main(int argc, char* args[])
 	}
 	else
 	{
+		//The level tiles
+		Tile* tileSet[TOTAL_TILES];
+
 		//Load media
-		if (!loadMedia())
+		if (!loadMedia(tileSet))
 		{
 			printf("Failed to load media!\n");
 		}
@@ -150,7 +283,6 @@ int main(int argc, char* args[])
 
 			//The dot that will be moving around on the screen
 			Circle circle;
-			Square square;
 
 			//While application is running
 			while (!quit)
@@ -163,36 +295,34 @@ int main(int argc, char* args[])
 					{
 						quit = true;
 					}
-
 					//Handle input for the dot
 					circle.handleEvent(e);
-
-					//Handle input for the Square
-					square.handleEvent(e);
 				}
 
 				//Move the dot
 				circle.move(SCREEN_WIDTH, SCREEN_HEIGHT);
 
-				//Move the square
-				square.move(SCREEN_WIDTH, SCREEN_HEIGHT);
-
 				//Clear screen
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 				SDL_RenderClear(gRenderer);
 
+				//Render level
+				for (int i = 0; i < TOTAL_TILES; ++i)
+				{
+					tileSet[i]->render(gRenderer, &gTileTexture, gTileClips);
+				}
+
 				//Render objects
-				square.render(gRenderer, &gSquareTexture);
 				circle.render(gRenderer, &gCircleTexture);
 
 				//Update screen
 				SDL_RenderPresent(gRenderer);
 			}
 		}
+		
+		//Free resources and close SDL
+		close(tileSet);
 	}
-
-	//Free resources and close SDL
-	close();
 
 	return 0;
 }

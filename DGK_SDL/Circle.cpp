@@ -3,8 +3,8 @@
 Circle::Circle()
 {
 	//Initialize the offsets
-	mPosX = 0;
-	mPosY = 0;
+	mPosX = 600;
+	mPosY = 200;
 
 	//Initialize the velocity
 	mVelX = 0;
