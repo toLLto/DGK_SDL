@@ -14,10 +14,10 @@ Tile::Tile(int x, int y, int tileType)
 	mType = tileType;
 }
 
-void Tile::render(SDL_Renderer* gRenderer, Texture* gTileTexture, SDL_Rect* gTileClips)
+void Tile::render(SDL_Renderer* gRenderer, SDL_Rect& camera, Texture* gTileTexture, SDL_Rect* gTileClips)
 {
 	//Show the tile
-	gTileTexture->render(gRenderer, mBox.x, mBox.y, &gTileClips[mType]);
+	gTileTexture->render(gRenderer, mBox.x - camera.x, mBox.y - camera.y, &gTileClips[mType]);
 }
 
 int Tile::getType()

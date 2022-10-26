@@ -13,17 +13,17 @@ and may not be redistributed without written permission.*/
 #include "Tile.h"
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 760;
-const int SCREEN_HEIGHT = 720;
+const int SCREEN_WIDTH = 640;
+const int SCREEN_HEIGHT = 480;
 
 //The dimensions of the level
-const int LEVEL_WIDTH = 760;
-const int LEVEL_HEIGHT = 720;
+const int LEVEL_WIDTH = 840;
+const int LEVEL_HEIGHT = 960;
 
 //Tile constants
 const int TILE_WIDTH = 40;
 const int TILE_HEIGHT = 40;
-const int TOTAL_TILES = 342;
+const int TOTAL_TILES = 504;
 const int TOTAL_TILE_SPRITES = 3;
 
 //The different tile sprites
@@ -284,6 +284,9 @@ int main(int argc, char* args[])
 			//The dot that will be moving around on the screen
 			Circle circle;
 
+			//Create level camera
+			SDL_Rect camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+
 			//While application is running
 			while (!quit)
 			{
@@ -300,7 +303,8 @@ int main(int argc, char* args[])
 				}
 
 				//Move the dot
-				circle.move(SCREEN_WIDTH, SCREEN_HEIGHT);
+				circle.move(LEVEL_WIDTH, LEVEL_HEIGHT);
+				circle.setCamera(camera, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
 
 				//Clear screen
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -309,11 +313,11 @@ int main(int argc, char* args[])
 				//Render level
 				for (int i = 0; i < TOTAL_TILES; ++i)
 				{
-					tileSet[i]->render(gRenderer, &gTileTexture, gTileClips);
+					tileSet[i]->render(gRenderer, camera, &gTileTexture, gTileClips);
 				}
 
 				//Render objects
-				circle.render(gRenderer, &gCircleTexture);
+				circle.render(gRenderer, camera, &gCircleTexture);
 
 				//Update screen
 				SDL_RenderPresent(gRenderer);

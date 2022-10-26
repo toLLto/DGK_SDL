@@ -8,12 +8,12 @@
 class Circle
 {
 public:
-	//The dimensions of the dot
+	//The dimensions of the circle
 	static const int CIRCLE_WIDTH = 20;
 	static const int CIRCLE_HEIGHT = 20;
 
-	//Maximum axis velocity of the dot
-	float CIRCLE_VEL = 10.0f;
+	//Maximum axis velocity of the circle
+	float CIRCLE_VEL = 5.0f;
 
 	//Smoothing value
 	float CIRCLE_SMOOTHING = 0.5f;
@@ -21,20 +21,25 @@ public:
 	//Initializes the variables
 	Circle();
 
-	//Takes key presses and adjusts the dot's velocity
+	//Takes key presses and adjusts the circle's velocity
 	void handleEvent(SDL_Event& e);
 
 	//Moves the dot
 	void move(const int width, const int height);
 
-	//Shows the dot on the screen
-	void render(SDL_Renderer* gRenderer, Texture* gCircleTexture);
+	//Centers the camera over the circle
+	void setCamera(SDL_Rect& camera, const int sWidth, const int sHeight, const int lWidth, const int lHeight, float alpha);
+
+	//Shows the circle on the screen
+	void render(SDL_Renderer* gRenderer, SDL_Rect& camera, Texture* gCircleTexture);
 
 private:
-	//The X and Y offsets of the dot
-	float mPosX, mPosY;
+	//The box for our circle
+	SDL_Rect mBox;
 
-	//The velocity of the dot
+	bool direction;
+
+	//The velocity of the circle
 	float mVelX, mVelY;
 };
 #endif CIRCLE_H
