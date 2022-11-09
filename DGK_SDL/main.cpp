@@ -8,22 +8,23 @@ and may not be redistributed without written permission.*/
 #include <string>
 #include <fstream>
 #include "Texture.h"
-#include "Circle.h"
 #include "Square.h"
 #include "Tile.h"
+#include "Sprite.h"
+#include "Camera.h"
 
 //Screen dimension constants
-const int SCREEN_WIDTH = 640;
-const int SCREEN_HEIGHT = 480;
+const int SCREEN_WIDTH = 1280;
+const int SCREEN_HEIGHT = 720;
 
 //The dimensions of the level
-const int LEVEL_WIDTH = 840;
-const int LEVEL_HEIGHT = 960;
+const int LEVEL_WIDTH = 1600;
+const int LEVEL_HEIGHT = 1600;
 
 //Tile constants
 const int TILE_WIDTH = 40;
 const int TILE_HEIGHT = 40;
-const int TOTAL_TILES = 504;
+const int TOTAL_TILES = 1600;
 const int TOTAL_TILE_SPRITES = 3;
 
 //The different tile sprites
@@ -50,7 +51,8 @@ SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
 //Scene textures
-Texture gCircleTexture;
+Texture gSprite1Texture;
+Texture gSprite2Texture;
 Texture gTileTexture;
 SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
 
@@ -113,8 +115,15 @@ bool loadMedia(Tile* tiles[])
 	//Loading success flag
 	bool success = true;
 
-	//Load circle texture
-	if (!gCircleTexture.loadFromFile("dot.bmp", gRenderer))
+	//Load first sprite texture
+	if (!gSprite1Texture.loadFromFile("Character1_smaller.png", gRenderer))
+	{
+		printf("Failed to load dot texture!\n");
+		success = false;
+	}
+
+	//Load second sprite texture
+	if (!gSprite2Texture.loadFromFile("Character2.png", gRenderer))
 	{
 		printf("Failed to load dot texture!\n");
 		success = false;
@@ -150,7 +159,8 @@ void close(Tile* tiles[])
 	}
 
 	//Free loaded images
-	gCircleTexture.free();
+	gSprite1Texture.free();
+	gSprite2Texture.free();
 	gTileTexture.free();
 
 	//Destroy window	
@@ -282,10 +292,13 @@ int main(int argc, char* args[])
 			SDL_Event e;
 
 			//The dot that will be moving around on the screen
-			Circle circle;
+			//Circle circle;
+			Sprite sprite1(1, gSprite1Texture.getWidth(), gSprite1Texture.getHeight(), 5.0f, 0.5f);
+			Sprite sprite2(3, gSprite1Texture.getWidth(), gSprite1Texture.getHeight(), 5.0f, 0.5f);
 
 			//Create level camera
-			SDL_Rect camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+			//SDL_Rect camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
+			Camera cam(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 			//While application is running
 			while (!quit)
@@ -299,12 +312,15 @@ int main(int argc, char* args[])
 						quit = true;
 					}
 					//Handle input for the dot
-					circle.handleEvent(e);
+					sprite1.handleEvent(e);
+					sprite2.handleEvent(e);
 				}
 
 				//Move the dot
-				circle.move(LEVEL_WIDTH, LEVEL_HEIGHT);
-				circle.setCamera(camera, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
+				sprite1.move(LEVEL_WIDTH, LEVEL_HEIGHT);
+				sprite2.move(LEVEL_WIDTH, LEVEL_HEIGHT);
+				//sprite1.setCamera(camera, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
+				cam.move(sprite1, sprite2, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
 
 				//Clear screen
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -313,11 +329,12 @@ int main(int argc, char* args[])
 				//Render level
 				for (int i = 0; i < TOTAL_TILES; ++i)
 				{
-					tileSet[i]->render(gRenderer, camera, &gTileTexture, gTileClips);
+					tileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips);
 				}
 
 				//Render objects
-				circle.render(gRenderer, camera, &gCircleTexture);
+				sprite1.render(gRenderer, cam, &gSprite1Texture);
+				sprite2.render(gRenderer, cam, &gSprite2Texture);
 
 				//Update screen
 				SDL_RenderPresent(gRenderer);

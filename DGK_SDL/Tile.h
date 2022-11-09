@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <string>
 #include "Texture.h"
+#include "Camera.h"
 
 class Tile
 {
@@ -16,7 +17,7 @@ public:
 	Tile(int x, int y, int tileType);
 
 	//Shows the tile
-	void render(SDL_Renderer* gRenderer, SDL_Rect& camera, Texture* gTileTexture, SDL_Rect gTileClips[3]);
+	void render(SDL_Renderer* gRenderer, Camera& camera, Texture* gTileTexture, SDL_Rect gTileClips[3]);
 
 	//Get the tile type
 	int getType();

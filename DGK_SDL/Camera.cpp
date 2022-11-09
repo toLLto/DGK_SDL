@@ -1,0 +1,52 @@
+#include "Camera.h"
+
+Camera::Camera(int start_x, int start_y, int width, int height)
+{
+	camera = {start_x, start_y, width, height};
+}
+
+Camera::~Camera()
+{
+}
+
+void Camera::move(Sprite& s1, Sprite& s2, const int sWidth, const int sHeight, const int lWidth, const int lHeight, float alpha)
+{
+	//camera.y = (s1.getBoxY() + s1.sprite_height / 2) - sHeight / 2;
+
+	//Lerp
+	//if (s1.getDirection())
+	//{
+	//	camera.x = camera.x + (alpha * (s1.getBoxX() - (sWidth * 0.2) - camera.x));
+	//}
+	//else
+	//{
+	//	camera.x = camera.x + (alpha * (s1.getBoxX() - (sWidth * 0.8) - camera.x));
+	//}
+
+	camera.x = ((s1.getBoxX() + s1.sprite_width / 2) + (s2.getBoxX() + s2.sprite_width / 2)) / 2 - sWidth / 2;
+	camera.y = ((s1.getBoxY() + s1.sprite_height / 2) + (s2.getBoxY() + s2.sprite_height / 2)) / 2 - sHeight / 2;
+
+	if (camera.x < 0)
+	{
+		camera.x = 0;
+	}
+	if (camera.y < 0)
+	{
+		camera.y = 0;
+	}
+	if (camera.x > lWidth - camera.w)
+	{
+		camera.x = lWidth - camera.w;
+	}
+	if (camera.y > lHeight - camera.h)
+	{
+		camera.y = lHeight - camera.h;
+	}
+
+	scale = 1.0 - std::max(abs(s1.getBoxX() - s2.getBoxX()), abs(s1.getBoxY() - s2.getBoxY())) * factor;
+}
+
+double Camera::getScale()
+{
+	return scale;
+}
