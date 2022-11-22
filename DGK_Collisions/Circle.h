@@ -15,26 +15,27 @@ public:
 	static const int CIRCLE_HEIGHT = 60;
 
 	//Maximum axis velocity of the circle
-	float CIRCLE_VEL = 3.0f;
+	float CIRCLE_VEL = 0.5f;
 
 	//Initializes the variables
 	Circle(float _x, float _y, unsigned int _id);
 
 	//Moves the dot
-	void move(/*CircleCollider& circle,*/ const int width, const int height);
+	void move(double deltaTime, const int width, const int height);
 
 	//Shows the circle on the screen
 	void render(SDL_Renderer* gRenderer, Texture* gCircleTexture);
 
 	//Checks if this circle collides with another
-	bool checkCollision(std::vector<Circle>& circles);
-
-	float distanceSquared(float x1, float y1, float x2, float y2);
+	bool checkCollision(std::vector<Circle*>& circles, bool separationCheck, bool reflectionCheck);
 
 	Vector getPosition();
 	Vector getVelocity();
 	float getR();
 	unsigned int getID();
+
+	void setPosition(Vector v);
+	void setVelocity(Vector v);
 
 private:
 	//The X and Y offsets of the circle

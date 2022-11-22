@@ -11,6 +11,7 @@ public:
 	Vector();
 	Vector(const float _x, const float _y);
 	Vector(const Vector v1, const Vector v2);
+	Vector(const Vector& v);
 
 	float length();
 	void normalize();
@@ -18,12 +19,16 @@ public:
 
 	void add(const float& f);
 	void operator+=(const float& f);
+	Vector operator+(const Vector& v) const;
 	void subtract(const float& f);
 	void operator-=(const float& f);
+	Vector operator-(const Vector& v) const;
 	void divide(const float& f);
 	void operator/=(const float& f);
+	Vector operator/(const float& f) const;
 	void multiply(const float& f);
 	void operator*=(const float& f);
+	Vector operator*(const float& f) const;
 	Vector dot(const Vector& v);
 	float dotProduct(const Vector& v);
 

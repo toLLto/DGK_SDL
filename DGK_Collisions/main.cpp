@@ -36,7 +36,7 @@ SDL_Renderer* gRenderer = NULL;
 Texture gCircleTexture;
 
 //Circles
-vector<Circle> circles;
+vector<Circle*> circles;
 
 bool init()
 {
@@ -145,8 +145,9 @@ int main(int argc, char* args[])
 			//Event handler
 			SDL_Event e;
 
-			//Circle circle(Circle::CIRCLE_WIDTH / 2, Circle::CIRCLE_HEIGHT / 2, 0);
-			for (int i = 1; i <= 2; i++)
+			srand(time(nullptr));
+			
+			for (int i = 0; i < 10; i++)
 			{
 				float x, y;
 				x = (float)(rand() % SCREEN_WIDTH);
@@ -169,14 +170,20 @@ int main(int argc, char* args[])
 				{
 					y -= Circle::CIRCLE_HEIGHT;
 				}
-
-				Circle tmp(x, y, i);
-				circles.push_back(tmp);
+				
+				circles.push_back(new Circle(x, y, i));
 			}
+
+			Uint64 perf_counter = SDL_GetPerformanceCounter();
+			double deltaTime;
 
 			//While application is running
 			while (!quit)
 			{
+				Uint64 previous = perf_counter;
+				perf_counter = SDL_GetPerformanceCounter();
+				deltaTime = (double)((perf_counter - previous) * 1000 / (double)SDL_GetPerformanceFrequency());;
+
 				//Handle events on queue
 				while (SDL_PollEvent(&e) != 0)
 				{
@@ -190,13 +197,13 @@ int main(int argc, char* args[])
 				//Move the circles
 				for (auto& c : circles)
 				{
-					c.move(SCREEN_WIDTH, SCREEN_HEIGHT);
+					c->move(deltaTime, SCREEN_WIDTH, SCREEN_HEIGHT);
 				}
 
 				//Check collisions
 				for (auto& c : circles)
 				{
-					c.checkCollision(circles);
+					c->checkCollision(circles, true, true);
 				}
 
 				//Clear screen
@@ -206,7 +213,7 @@ int main(int argc, char* args[])
 				//Render circles
 				for (auto& c : circles)
 				{
-					c.render(gRenderer, &gCircleTexture);
+					c->render(gRenderer, &gCircleTexture);
 				}
 				//circle.render(gRenderer, &gCircleTexture);
 
