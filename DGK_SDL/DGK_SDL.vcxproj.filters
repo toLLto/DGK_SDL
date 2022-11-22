@@ -30,12 +30,30 @@
     <ClCompile Include="Square.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Tile.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Camera.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Sprite.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="dot.bmp">
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="square.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="tiles.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Character1.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Character2.png">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
@@ -52,5 +70,17 @@
     <ClInclude Include="Square.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Tile.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Camera.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Sprite.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="map.map" />
   </ItemGroup>
 </Project>
