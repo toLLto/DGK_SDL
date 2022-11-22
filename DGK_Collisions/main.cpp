@@ -9,6 +9,7 @@ and may not be redistributed without written permission.*/
 #include <vector>
 #include <fstream>
 #include "Circle.h"
+#include <iostream>
 
 using namespace std;
 
@@ -144,12 +145,12 @@ int main(int argc, char* args[])
 			//Event handler
 			SDL_Event e;
 
-			Circle circle(Circle::CIRCLE_WIDTH / 2, Circle::CIRCLE_HEIGHT / 2);
-			for (int i = 0; i < 10; i++)
+			//Circle circle(Circle::CIRCLE_WIDTH / 2, Circle::CIRCLE_HEIGHT / 2, 0);
+			for (int i = 1; i <= 2; i++)
 			{
 				float x, y;
-				x = rand() % SCREEN_WIDTH;
-				y = rand() % SCREEN_HEIGHT;
+				x = (float)(rand() % SCREEN_WIDTH);
+				y = (float)(rand() % SCREEN_HEIGHT);
 
 				if (x - Circle::CIRCLE_WIDTH < 0)
 				{
@@ -169,7 +170,7 @@ int main(int argc, char* args[])
 					y -= Circle::CIRCLE_HEIGHT;
 				}
 
-				Circle tmp(x, y);
+				Circle tmp(x, y, i);
 				circles.push_back(tmp);
 			}
 
@@ -186,14 +187,20 @@ int main(int argc, char* args[])
 					}
 				}
 
-				//Move the circles and check collision
+				//Move the circles
 				for (auto& c : circles)
 				{
-					c.move(circle.getCollider(), SCREEN_WIDTH, SCREEN_HEIGHT);
+					c.move(SCREEN_WIDTH, SCREEN_HEIGHT);
+				}
+
+				//Check collisions
+				for (auto& c : circles)
+				{
+					c.checkCollision(circles);
 				}
 
 				//Clear screen
-				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+				SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 				SDL_RenderClear(gRenderer);
 
 				//Render circles
@@ -201,7 +208,7 @@ int main(int argc, char* args[])
 				{
 					c.render(gRenderer, &gCircleTexture);
 				}
-				circle.render(gRenderer, &gCircleTexture);
+				//circle.render(gRenderer, &gCircleTexture);
 
 				//Update screen
 				SDL_RenderPresent(gRenderer);

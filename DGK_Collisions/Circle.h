@@ -3,13 +3,9 @@
 
 #include <SDL.h>
 #include <string>
+#include <vector>
 #include "Texture.h"
-
-struct CircleCollider
-{
-	float x, y;
-	float r;
-};
+#include "Vector.h"
 
 class Circle
 {
@@ -19,36 +15,38 @@ public:
 	static const int CIRCLE_HEIGHT = 60;
 
 	//Maximum axis velocity of the circle
-	float CIRCLE_VEL = 2.0f;
+	float CIRCLE_VEL = 3.0f;
 
 	//Initializes the variables
-	Circle(int x, int y);
+	Circle(float _x, float _y, unsigned int _id);
 
 	//Moves the dot
-	void move(CircleCollider& circle, const int width, const int height);
+	void move(/*CircleCollider& circle,*/ const int width, const int height);
 
 	//Shows the circle on the screen
 	void render(SDL_Renderer* gRenderer, Texture* gCircleTexture);
 
-	//Get collision circle
-	CircleCollider& getCollider();
-
 	//Checks if this circle collides with another
-	bool checkCollision(CircleCollider& c);
+	bool checkCollision(std::vector<Circle>& circles);
 
-	float vectorLength(float x1, float y1, float x2, float y2);
+	float distanceSquared(float x1, float y1, float x2, float y2);
+
+	Vector getPosition();
+	Vector getVelocity();
+	float getR();
+	unsigned int getID();
 
 private:
 	//The X and Y offsets of the circle
-	float mPosX, mPosY;
+	Vector position;
 
 	//The velocity of the circle
-	float mVelX, mVelY;
+	Vector velocity;
 
-	//Circle's collider
-	CircleCollider mCollider;
+	//Radius
+	float r;
 
-	//Move the collider
-	void shiftColliders();
+	//Circle ID
+	unsigned int id;
 };
 #endif CIRCLE_H
