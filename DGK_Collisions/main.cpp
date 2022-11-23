@@ -177,6 +177,9 @@ int main(int argc, char* args[])
 			Uint64 perf_counter = SDL_GetPerformanceCounter();
 			double deltaTime;
 
+			bool separationCheck = true;
+			bool reflectionCheck = true;
+
 			//While application is running
 			while (!quit)
 			{
@@ -192,6 +195,37 @@ int main(int argc, char* args[])
 					{
 						quit = true;
 					}
+
+					if (e.type == SDL_KEYDOWN)
+					{
+						if (e.key.keysym.sym == SDLK_s)
+						{
+							if (separationCheck)
+							{
+								printf("[Separation: OFF]\n");
+								separationCheck = false;
+							}
+							else
+							{
+								printf("[Separation: ON]\n");
+								separationCheck = true;
+							}
+						}
+
+						if (e.key.keysym.sym == SDLK_r)
+						{
+							if (reflectionCheck)
+							{
+								printf("[Reflection: OFF]\n");
+								reflectionCheck = false;
+							}
+							else
+							{
+								printf("[Reflection: ON]\n");
+								reflectionCheck = true;
+							}
+						}
+					}
 				}
 
 				//Move the circles
@@ -203,7 +237,7 @@ int main(int argc, char* args[])
 				//Check collisions
 				for (auto& c : circles)
 				{
-					c->checkCollision(circles, true, true);
+					c->checkCollision(circles, separationCheck, reflectionCheck);
 				}
 
 				//Clear screen

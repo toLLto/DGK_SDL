@@ -13,13 +13,13 @@ Circle::Circle(float _x, float _y, unsigned int _id)
 void Circle::move(double deltaTime, const int width, const int height)
 {
 	//Move the circle left or right
-	position += velocity * (float)deltaTime;
+	position += velocity * static_cast<float>(deltaTime);
 
 	//If the circle went too far to the left or right
 	if ((position.x - r < 0) || (position.x + r > width))
 	{
 		//Move back
-		//position.x -= velocity.x;
+		position.x -= velocity.x;
 		velocity.x *= -1;
 	}
 
@@ -27,7 +27,7 @@ void Circle::move(double deltaTime, const int width, const int height)
 	if ((position.y - r < 0) || (position.y + r > height))
 	{
 		//Move back
-		//position.y -= velocity.y;
+		position.y -= velocity.y;
 		velocity.y *= -1;
 	}
 }
@@ -37,7 +37,7 @@ void Circle::render(SDL_Renderer* gRenderer, Texture* gCircleTexture)
 	gCircleTexture->render(gRenderer, position.x - r, position.y - r);
 }
 
-bool Circle::checkCollision(std::vector<Circle*>& circles, bool separationCheck, bool reflectionCheck)
+void Circle::checkCollision(std::vector<Circle*>& circles, bool separationCheck, bool reflectionCheck)
 {
 	for (auto& c : circles)
 	{
@@ -47,7 +47,7 @@ bool Circle::checkCollision(std::vector<Circle*>& circles, bool separationCheck,
 		}
 
 		Vector v = this->position - c->getPosition();
-		float length = v.length();
+		const float length = v.length();
 
 		if (length < this->r + c->getR())
 		{
@@ -72,8 +72,6 @@ bool Circle::checkCollision(std::vector<Circle*>& circles, bool separationCheck,
 			}
 		}
 	}
-
-	return false;
 }
 
 Vector Circle::getPosition()

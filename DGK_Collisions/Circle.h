@@ -27,7 +27,7 @@ public:
 	void render(SDL_Renderer* gRenderer, Texture* gCircleTexture);
 
 	//Checks if this circle collides with another
-	bool checkCollision(std::vector<Circle*>& circles, bool separationCheck, bool reflectionCheck);
+	void checkCollision(std::vector<Circle*>& circles, bool separationCheck, bool reflectionCheck);
 
 	Vector getPosition();
 	Vector getVelocity();
