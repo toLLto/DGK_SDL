@@ -147,7 +147,7 @@ int main(int argc, char* args[])
 
 			srand(time(nullptr));
 			
-			for (int i = 0; i < 10; i++)
+			for (int i = 0; i < 12; i++)
 			{
 				float x, y;
 				x = (float)(rand() % SCREEN_WIDTH);
@@ -177,15 +177,15 @@ int main(int argc, char* args[])
 			Uint64 perf_counter = SDL_GetPerformanceCounter();
 			double deltaTime;
 
-			bool separationCheck = true;
-			bool reflectionCheck = true;
+			bool separationCheck = false;
+			bool reflectionCheck = false;
 
 			//While application is running
 			while (!quit)
 			{
 				Uint64 previous = perf_counter;
 				perf_counter = SDL_GetPerformanceCounter();
-				deltaTime = (double)((perf_counter - previous) * 1000 / (double)SDL_GetPerformanceFrequency());;
+				deltaTime = static_cast<double>((perf_counter - previous) * 1000 / static_cast<double>(SDL_GetPerformanceFrequency()));;
 
 				//Handle events on queue
 				while (SDL_PollEvent(&e) != 0)
@@ -231,13 +231,13 @@ int main(int argc, char* args[])
 				//Move the circles
 				for (auto& c : circles)
 				{
-					c->move(deltaTime, SCREEN_WIDTH, SCREEN_HEIGHT);
+					c->move(deltaTime);
 				}
 
 				//Check collisions
 				for (auto& c : circles)
 				{
-					c->checkCollision(circles, separationCheck, reflectionCheck);
+					c->checkCollision(circles, separationCheck, reflectionCheck, SCREEN_WIDTH, SCREEN_HEIGHT);
 				}
 
 				//Clear screen

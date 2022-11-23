@@ -11,23 +11,23 @@ class Circle
 {
 public:
 	//The dimensions of the circle
-	static const int CIRCLE_WIDTH = 60;
-	static const int CIRCLE_HEIGHT = 60;
+	static const int CIRCLE_WIDTH = 50;
+	static const int CIRCLE_HEIGHT = 50;
 
 	//Maximum axis velocity of the circle
-	float CIRCLE_VEL = 0.5f;
+	float CIRCLE_VEL = 1.5f;
 
 	//Initializes the variables
 	Circle(float _x, float _y, unsigned int _id);
 
 	//Moves the dot
-	void move(double deltaTime, const int width, const int height);
+	void move(double deltaTime);
 
 	//Shows the circle on the screen
 	void render(SDL_Renderer* gRenderer, Texture* gCircleTexture);
 
 	//Checks if this circle collides with another
-	void checkCollision(std::vector<Circle*>& circles, bool separationCheck, bool reflectionCheck);
+	void checkCollision(std::vector<Circle*>& circles, bool separationCheck, bool reflectionCheck, const int width, const int height);
 
 	Vector getPosition();
 	Vector getVelocity();
