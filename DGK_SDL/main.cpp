@@ -22,9 +22,9 @@ const int LEVEL_WIDTH = 1600;
 const int LEVEL_HEIGHT = 1600;
 
 //Tile constants
-const int TILE_WIDTH = 40;
-const int TILE_HEIGHT = 40;
-const int TOTAL_TILES = 1600;
+const int TILE_WIDTH = 100;
+const int TILE_HEIGHT = 100;
+const int TOTAL_TILES = 256;
 const int TOTAL_TILE_SPRITES = 3;
 
 //The different tile sprites
@@ -51,8 +51,9 @@ SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
 //Scene textures
-Texture gSprite1Texture;
-Texture gSprite2Texture;
+Texture gCircleTexture;
+Texture gSquareTexture;
+Texture gStarTexture;
 Texture gTileTexture;
 SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
 
@@ -116,14 +117,21 @@ bool loadMedia(Tile* tiles[])
 	bool success = true;
 
 	//Load first sprite texture
-	if (!gSprite1Texture.loadFromFile("Character1_smaller.png", gRenderer))
+	if (!gCircleTexture.loadFromFile("square.png", gRenderer))
 	{
 		printf("Failed to load dot texture!\n");
 		success = false;
 	}
 
 	//Load second sprite texture
-	if (!gSprite2Texture.loadFromFile("Character2.png", gRenderer))
+	if (!gSquareTexture.loadFromFile("circle.png", gRenderer))
+	{
+		printf("Failed to load dot texture!\n");
+		success = false;
+	}
+
+	//Load third sprite texture
+	if (!gStarTexture.loadFromFile("star.png", gRenderer))
 	{
 		printf("Failed to load dot texture!\n");
 		success = false;
@@ -159,8 +167,9 @@ void close(Tile* tiles[])
 	}
 
 	//Free loaded images
-	gSprite1Texture.free();
-	gSprite2Texture.free();
+	gCircleTexture.free();
+	gSquareTexture.free();
+	gStarTexture.free();
 	gTileTexture.free();
 
 	//Destroy window	
@@ -248,12 +257,12 @@ bool setTiles(Tile* tiles[])
 			gTileClips[TILE_RED].h = TILE_HEIGHT;
 
 			gTileClips[TILE_BLACK].x = 0;
-			gTileClips[TILE_BLACK].y = 40;
+			gTileClips[TILE_BLACK].y = 100;
 			gTileClips[TILE_BLACK].w = TILE_WIDTH;
 			gTileClips[TILE_BLACK].h = TILE_HEIGHT;
 
 			gTileClips[TILE_BROWN].x = 0;
-			gTileClips[TILE_BROWN].y = 80;
+			gTileClips[TILE_BROWN].y = 200;
 			gTileClips[TILE_BROWN].w = TILE_WIDTH;
 			gTileClips[TILE_BROWN].h = TILE_HEIGHT;
 		}
@@ -293,8 +302,9 @@ int main(int argc, char* args[])
 
 			//The dot that will be moving around on the screen
 			//Circle circle;
-			Sprite sprite1(1, gSprite1Texture.getWidth(), gSprite1Texture.getHeight(), 5.0f, 0.5f);
-			Sprite sprite2(3, gSprite1Texture.getWidth(), gSprite1Texture.getHeight(), 5.0f, 0.5f);
+			Sprite sprite1(1, 1, 320, 20, gCircleTexture.getWidth(), gCircleTexture.getHeight(), 5.0f, 0.5f);
+			Sprite sprite2(2, 2, 20, 720, gSquareTexture.getWidth(), gSquareTexture.getHeight(), 5.0f, 0.5f);
+			Sprite star(0, 0, 820, 920, gStarTexture.getWidth(), gStarTexture.getHeight(), 5.0f, 0.5f);
 
 			//Create level camera
 			//SDL_Rect camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
@@ -333,8 +343,9 @@ int main(int argc, char* args[])
 				}
 
 				//Render objects
-				sprite1.render(gRenderer, cam, &gSprite1Texture);
-				sprite2.render(gRenderer, cam, &gSprite2Texture);
+				star.render(gRenderer, cam, &gStarTexture);
+				sprite2.render(gRenderer, cam, &gSquareTexture);
+				sprite1.render(gRenderer, cam, &gCircleTexture);
 
 				//Update screen
 				SDL_RenderPresent(gRenderer);

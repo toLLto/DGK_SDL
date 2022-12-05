@@ -1,24 +1,23 @@
 #include "Sprite.h"
 
-Sprite::Sprite(unsigned int mt, unsigned int width, unsigned int height, float vel, float smooth)
+Sprite::Sprite(unsigned int _mt, unsigned int _ct, unsigned int _x, unsigned int _y, unsigned int _width, unsigned int _height, float _vel, float _smooth)
 {
-	movement_type = mt;
-	sprite_width = width;
-	sprite_height = height;
-	sprite_vel = vel;
-	sprite_smooth = smooth;
+	movement_type = _mt;
+	collider_type = _ct;
+	sprite_width = _width;
+	sprite_height = _height;
+	sprite_vel = _vel;
+	sprite_smooth = _smooth;
 
-	// Initialize sprite box
-	mBox.x = 0;
-	mBox.y = 0;
-	mBox.w = sprite_width;
-	mBox.h = sprite_height;
+	if (_ct != 1)
+		this->radius = 0.f;
+	else
+		this->radius = _width / 2;
+
+	this->position = Vector(_x, _y);
+	this->velocity = Vector(0, 0);
 
 	direction = false;
-
-	//Initialize the velocity
-	mVelX = 0;
-	mVelY = 0;
 }
 
 void Sprite::handleEvent(SDL_Event& e)
@@ -31,21 +30,74 @@ void Sprite::handleEvent(SDL_Event& e)
 			//Adjust the velocity
 			switch (e.key.keysym.sym)
 			{
+			case SDLK_w:
+				velocity.y -= sprite_vel;
+				SDL_Log("W was pressed");
+				break;
+			case SDLK_s:
+				velocity.y += sprite_vel;
+				SDL_Log("S was pressed");
+				break;
+			case SDLK_a:
+				velocity.x -= sprite_vel;
+				SDL_Log("A was pressed");
+				direction = true;
+				break;
+			case SDLK_d:
+				velocity.x += sprite_vel;
+				SDL_Log("D was pressed");
+				direction = false;
+				break;
+			}
+		}
+		//If a key was released
+		else if (e.type == SDL_KEYUP && e.key.repeat == 0)
+		{
+			//Adjust the velocity
+			switch (e.key.keysym.sym)
+			{
+			case SDLK_w:
+				velocity.y = 0;
+				SDL_Log("W was released");
+				break;
+			case SDLK_s:
+				velocity.y = 0;
+				SDL_Log("S was released");
+				break;
+			case SDLK_a:
+				velocity.x = 0;
+				SDL_Log("A was released");
+				break;
+			case SDLK_d:
+				velocity.x = 0;
+				SDL_Log("D was released");
+				break;
+			}
+		}
+	}
+	else if (movement_type == 2)
+	{
+		//If a key was pressed
+		if (e.type == SDL_KEYDOWN && e.key.repeat == 0)
+		{
+			//Adjust the velocity
+			switch (e.key.keysym.sym)
+			{
 			case SDLK_UP:
-				mVelY -= sprite_vel;
+				velocity.y -= sprite_vel;
 				SDL_Log("Up was pressed");
 				break;
 			case SDLK_DOWN:
-				mVelY += sprite_vel;
+				velocity.y += sprite_vel;
 				SDL_Log("Down was pressed");
 				break;
 			case SDLK_LEFT:
-				mVelX -= sprite_vel;
+				velocity.x -= sprite_vel;
 				SDL_Log("Left was pressed");
 				direction = true;
 				break;
 			case SDLK_RIGHT:
-				mVelX += sprite_vel;
+				velocity.x += sprite_vel;
 				SDL_Log("Right was pressed");
 				direction = false;
 				break;
@@ -58,19 +110,19 @@ void Sprite::handleEvent(SDL_Event& e)
 			switch (e.key.keysym.sym)
 			{
 			case SDLK_UP:
-				mVelY = 0;
+				velocity.y = 0;
 				SDL_Log("Up was released");
 				break;
 			case SDLK_DOWN:
-				mVelY = 0;
+				velocity.y = 0;
 				SDL_Log("Down was released");
 				break;
 			case SDLK_LEFT:
-				mVelX = 0;
+				velocity.x = 0;
 				SDL_Log("Left was released");
 				break;
 			case SDLK_RIGHT:
-				mVelX = 0;
+				velocity.x = 0;
 				SDL_Log("Right was released");
 				break;
 			}
@@ -85,8 +137,8 @@ void Sprite::handleEvent(SDL_Event& e)
 			int x, y;
 			SDL_GetMouseState(&x, &y);
 
-			mBox.x = x;
-			mBox.y = y;
+			position.x = x;
+			position.y = y;
 
 			SDL_Log("Mouse is at [%d, %d]", x, y);
 		}
@@ -98,85 +150,105 @@ void Sprite::move(const int width, const int height)
 	if (movement_type == 1)
 	{
 		//Move the circle left or right
-		mBox.x += mVelX;
+		position.x += velocity.x;
 
 		//If the circle went too far to the left or right
-		if ((mBox.x < 0) || (mBox.x + sprite_width > width))
+		if ((position.x < 0) || (position.x + sprite_width > width))
 		{
 			//Move back
-			mBox.x -= mVelX;
+			position.x -= velocity.x;
 		}
 
 		//Move the circle up or down
-		mBox.y += mVelY;
+		position.y += velocity.y;
 
 		//If the circle went too far up or down
-		if ((mBox.y < 0) || (mBox.y + sprite_height > height))
+		if ((position.y < 0) || (position.y + sprite_height > height))
 		{
 			//Move back
-			mBox.y -= mVelY;
+			position.y -= velocity.y;
 		}
 	}
-}
 
-void Sprite::setCamera(SDL_Rect& camera, const int sWidth, const int sHeight, const int lWidth, const int lHeight, float alpha)
-{
-	//Center the camera over the circle
-	//camera.x = (mBox.x + CIRCLE_WIDTH / 2) - sWidth / 2;
-	camera.y = (mBox.y + sprite_height / 2) - sHeight / 2;
+	if (movement_type == 2)
+	{
+		//Move the circle left or right
+		position.x += velocity.x;
 
-	//Lerp
-	if (direction)
-	{
-		camera.x = camera.x + (alpha * (mBox.x - (sWidth * 0.2) - camera.x));
-	}
-	else
-	{
-		camera.x = camera.x + (alpha * (mBox.x - (sWidth * 0.8) - camera.x));
-	}
+		//If the circle went too far to the left or right
+		if ((position.x < 0) || (position.x + sprite_width > width))
+		{
+			//Move back
+			position.x -= velocity.x;
+		}
 
+		//Move the circle up or down
+		position.y += velocity.y;
 
-	if (camera.x < 0)
-	{
-		camera.x = 0;
-	}
-	if (camera.y < 0)
-	{
-		camera.y = 0;
-	}
-	if (camera.x > lWidth - camera.w)
-	{
-		camera.x = lWidth - camera.w;
-	}
-	if (camera.y > lHeight - camera.h)
-	{
-		camera.y = lHeight - camera.h;
+		//If the circle went too far up or down
+		if ((position.y < 0) || (position.y + sprite_height > height))
+		{
+			//Move back
+			position.y -= velocity.y;
+		}
 	}
 }
 
 void Sprite::render(SDL_Renderer* gRenderer, Camera& cam, Texture* gSpriteTexture)
 {
-	if (movement_type == 1)
+	if (movement_type == 0)
 	{
-		gSpriteTexture->render(gRenderer, mBox.x - cam.camera.x, mBox.y - cam.camera.y, cam.getScale());
+		gSpriteTexture->render(gRenderer, position.x - cam.camera.x, position.y - cam.camera.y, cam.getScale());
+	}
+	else if (movement_type == 1)
+	{
+		gSpriteTexture->render(gRenderer, position.x - cam.camera.x, position.y - cam.camera.y, cam.getScale());
+	}
+	else if (movement_type == 2)
+	{
+		gSpriteTexture->render(gRenderer, position.x - cam.camera.x, position.y - cam.camera.y, cam.getScale());
 	}
 	else if (movement_type == 3)
 	{
-		gSpriteTexture->render(gRenderer, mBox.x, mBox.y, cam.getScale());
+		gSpriteTexture->render(gRenderer, position.x, position.y, cam.getScale());
 	}
 }
 
-int Sprite::getBoxX()
+void Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, const int height)
 {
-	return mBox.x;
 }
 
-int Sprite::getBoxY()
+Vector Sprite::getPosition()
 {
-	return mBox.y;
+	return this->position;
+}
+
+Vector Sprite::getVelocity()
+{
+	return this->velocity;
 }
 
 bool Sprite::getDirection()
 {
 	return direction;
+}
+
+float Sprite::getRadius()
+{
+	return this->radius;
+}
+
+unsigned int Sprite::getID()
+{
+	return this->id;
+}
+
+void Sprite::setPosition(Vector v)
+{
+	this->position = v;
+}
+
+void Sprite::setVelocity(Vector v)
+{
+	this->velocity = v;
 }

@@ -23,8 +23,8 @@ void Camera::move(Sprite& s1, Sprite& s2, const int sWidth, const int sHeight, c
 	//	camera.x = camera.x + (alpha * (s1.getBoxX() - (sWidth * 0.8) - camera.x));
 	//}
 
-	camera.x = ((s1.getBoxX() + s1.sprite_width / 2) + (s2.getBoxX() + s2.sprite_width / 2)) / 2 - sWidth / 2;
-	camera.y = ((s1.getBoxY() + s1.sprite_height / 2) + (s2.getBoxY() + s2.sprite_height / 2)) / 2 - sHeight / 2;
+	camera.x = ((s1.getPosition().x + s1.sprite_width / 2) + (s2.getPosition().x + s2.sprite_width / 2)) / 2 - sWidth / 2;
+	camera.y = ((s1.getPosition().y + s1.sprite_height / 2) + (s2.getPosition().y + s2.sprite_height / 2)) / 2 - sHeight / 2;
 
 	if (camera.x < 0)
 	{
@@ -43,7 +43,7 @@ void Camera::move(Sprite& s1, Sprite& s2, const int sWidth, const int sHeight, c
 		camera.y = lHeight - camera.h;
 	}
 
-	scale = 1.0 - std::max(abs(s1.getBoxX() - s2.getBoxX()), abs(s1.getBoxY() - s2.getBoxY())) * factor;
+	scale = 1.0 - std::max(abs(s1.getPosition().x - s2.getPosition().x), abs(s1.getPosition().y - s2.getPosition().y)) * factor;
 }
 
 double Camera::getScale()

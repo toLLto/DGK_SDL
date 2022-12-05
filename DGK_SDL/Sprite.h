@@ -2,8 +2,11 @@
 #define SPRITE_H
 
 #include <SDL.h>
+#include <vector>
+
 #include "Texture.h"
 #include "Camera.h"
+#include "Vector.h"
 
 class Camera;
 
@@ -11,14 +14,24 @@ class Sprite
 {
 public:
 	// Movement Types
-	enum movement_scheme
+	/*enum movement_scheme
 	{
-		keyboard_arrows = 0,
-		keyboard_wasd = 1,
-		mouse = 2,
-		gamepad = 3
-	};
+		none = 0,
+		keyboard_arrows = 1,
+		keyboard_wasd = 2,
+		mouse = 3,
+		gamepad = 4
+	};*/
 	unsigned int movement_type;
+
+	// Collider Types
+	/*enum collider_type
+	{
+		noCollision = 0,
+		circle = 1,
+		rectangle = 2
+	};*/
+	unsigned int collider_type;
 
 	// Dimensions
 	unsigned int sprite_width, sprite_height;
@@ -29,7 +42,7 @@ public:
 	// Smoothing
 	float sprite_smooth;
 
-	Sprite(unsigned int mt, unsigned int width, unsigned int height, float vel, float smooth);
+	Sprite(unsigned int mt, unsigned int ct, unsigned int x, unsigned int y, unsigned int width, unsigned int height, float vel, float smooth);
 
 	//Takes key presses and adjusts the sprite's velocity
 	void handleEvent(SDL_Event& e);
@@ -37,24 +50,27 @@ public:
 	//Moves the sprite
 	void move(const int width, const int height);
 
-	//Centers the camera over the sprite
-	void setCamera(SDL_Rect& camera, const int sWidth, const int sHeight, const int lWidth, const int lHeight, float alpha);
-
 	//Shows the sprite on the screen
 	void render(SDL_Renderer* gRenderer, Camera& cam, Texture* gSpriteTexture);
 
-	int getBoxX();
-	int getBoxY();
+	//Checks if this circle collides with another
+	void checkCollision(std::vector<Sprite*>& sprites, const int width, const int height);
+
+	Vector getPosition();
+	Vector getVelocity();
 	bool getDirection();
+	float getRadius();
+	unsigned int getID();
+
+	void setPosition(Vector v);
+	void setVelocity(Vector v);
 
 private:
-	//The box for our sprite
-	SDL_Rect mBox;
-
+	Vector position;
+	Vector velocity;
 	bool direction;
-
-	//The velocity of the sprite
-	float mVelX, mVelY;
+	float radius;
+	unsigned int id;
 };
 
 #endif SPRITE_H
