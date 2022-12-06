@@ -53,6 +53,7 @@ void Circle::checkCollision(std::vector<Circle*>& circles, bool separationCheck,
 
 		if (length < this->r + c->r)
 		{
+			SDL_Log("Collision detected");
 			v.normalize();
 
 			if (separationCheck)

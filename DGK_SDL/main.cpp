@@ -6,6 +6,7 @@ and may not be redistributed without written permission.*/
 #include <SDL_image.h>
 #include <stdio.h>
 #include <string>
+#include <vector>
 #include <fstream>
 #include "Texture.h"
 #include "Square.h"
@@ -56,6 +57,9 @@ Texture gSquareTexture;
 Texture gStarTexture;
 Texture gTileTexture;
 SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
+
+//Sprites
+std::vector<Sprite*> sprites;
 
 bool init()
 {
@@ -117,14 +121,14 @@ bool loadMedia(Tile* tiles[])
 	bool success = true;
 
 	//Load first sprite texture
-	if (!gCircleTexture.loadFromFile("square.png", gRenderer))
+	if (!gSquareTexture.loadFromFile("square.png", gRenderer))
 	{
 		printf("Failed to load dot texture!\n");
 		success = false;
 	}
 
 	//Load second sprite texture
-	if (!gSquareTexture.loadFromFile("circle.png", gRenderer))
+	if (!gCircleTexture.loadFromFile("circle.png", gRenderer))
 	{
 		printf("Failed to load dot texture!\n");
 		success = false;
@@ -300,11 +304,16 @@ int main(int argc, char* args[])
 			//Event handler
 			SDL_Event e;
 
+			srand(time(nullptr));
+
 			//The dot that will be moving around on the screen
 			//Circle circle;
-			Sprite sprite1(1, 1, 320, 20, gCircleTexture.getWidth(), gCircleTexture.getHeight(), 5.0f, 0.5f);
-			Sprite sprite2(2, 2, 20, 720, gSquareTexture.getWidth(), gSquareTexture.getHeight(), 5.0f, 0.5f);
+			Sprite circle(1, 1, 320, 80, gCircleTexture.getWidth(), gCircleTexture.getHeight(), 5.0f, 0.5f);
+			Sprite square(2, 1, 20, 720, gSquareTexture.getWidth(), gSquareTexture.getHeight(), 5.0f, 0.5f);
 			Sprite star(0, 0, 820, 920, gStarTexture.getWidth(), gStarTexture.getHeight(), 5.0f, 0.5f);
+			sprites.push_back(&circle);
+			sprites.push_back(&square);
+			sprites.push_back(&star);
 
 			//Create level camera
 			//SDL_Rect camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
@@ -322,15 +331,21 @@ int main(int argc, char* args[])
 						quit = true;
 					}
 					//Handle input for the dot
-					sprite1.handleEvent(e);
-					sprite2.handleEvent(e);
+					sprites.at(0)->handleEvent(e);
+					sprites.at(1)->handleEvent(e);
 				}
 
 				//Move the dot
-				sprite1.move(LEVEL_WIDTH, LEVEL_HEIGHT);
-				sprite2.move(LEVEL_WIDTH, LEVEL_HEIGHT);
+				sprites.at(0)->move(LEVEL_WIDTH, LEVEL_HEIGHT);
+				sprites.at(1)->move(LEVEL_WIDTH, LEVEL_HEIGHT);
 				//sprite1.setCamera(camera, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
-				cam.move(sprite1, sprite2, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
+				cam.move(circle, square, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
+
+				//Check collisions
+				for (auto& s : sprites)
+				{
+					s->checkCollision(sprites, LEVEL_WIDTH, LEVEL_HEIGHT);
+				}
 
 				//Clear screen
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -343,9 +358,9 @@ int main(int argc, char* args[])
 				}
 
 				//Render objects
-				star.render(gRenderer, cam, &gStarTexture);
-				sprite2.render(gRenderer, cam, &gSquareTexture);
-				sprite1.render(gRenderer, cam, &gCircleTexture);
+				sprites.at(2)->render(gRenderer, cam, &gStarTexture);
+				sprites.at(1)->render(gRenderer, cam, &gSquareTexture);
+				sprites.at(0)->render(gRenderer, cam, &gCircleTexture);
 
 				//Update screen
 				SDL_RenderPresent(gRenderer);

@@ -10,7 +10,7 @@ Sprite::Sprite(unsigned int _mt, unsigned int _ct, unsigned int _x, unsigned int
 	sprite_smooth = _smooth;
 
 	if (_ct != 1)
-		this->radius = 0.f;
+		this->radius = 0;
 	else
 		this->radius = _width / 2;
 
@@ -200,25 +200,130 @@ void Sprite::render(SDL_Renderer* gRenderer, Camera& cam, Texture* gSpriteTextur
 {
 	if (movement_type == 0)
 	{
-		gSpriteTexture->render(gRenderer, position.x - cam.camera.x, position.y - cam.camera.y, cam.getScale());
+		gSpriteTexture->render(gRenderer, static_cast<int>(position.x) - cam.camera.x, static_cast<int>(position.y) - cam.camera.y, cam.getScale());
 	}
 	else if (movement_type == 1)
 	{
-		gSpriteTexture->render(gRenderer, position.x - cam.camera.x, position.y - cam.camera.y, cam.getScale());
+		gSpriteTexture->render(gRenderer, static_cast<int>(position.x) - cam.camera.x, static_cast<int>(position.y) - cam.camera.y, cam.getScale());
 	}
 	else if (movement_type == 2)
 	{
-		gSpriteTexture->render(gRenderer, position.x - cam.camera.x, position.y - cam.camera.y, cam.getScale());
+		gSpriteTexture->render(gRenderer, static_cast<int>(position.x) - cam.camera.x, static_cast<int>(position.y) - cam.camera.y, cam.getScale());
 	}
 	else if (movement_type == 3)
 	{
-		gSpriteTexture->render(gRenderer, position.x, position.y, cam.getScale());
+		gSpriteTexture->render(gRenderer, static_cast<int>(position.x), static_cast<int>(position.y), cam.getScale());
 	}
 }
 
 void Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, const int height)
 {
+	if (this->collider_type == 1)
+	{
+		// Sprite went outside boundaries
+		if ((this->position.x < 0.0f) || (static_cast<int>(this->position.x) + this->sprite_width > width))
+		{
+			//Move back
+			SDL_Log("Circle: Out on X axis");
+			this->position.x -= this->velocity.x;
+			this->velocity.x = 0;
+		}
 
+		if ((this->position.y < 0.0f) || (static_cast<int>(this->position.y) + this->sprite_height > height))
+		{
+			//Move back
+			SDL_Log("Circle: Out on Y axis");
+			this->position.y -= this->velocity.y;
+			this->velocity.y = 0;
+		}
+	}
+
+	if (this->collider_type == 2)
+	{
+		// Sprite went outside boundaries
+		if ((this->position.x < 0.0f) || (static_cast<int>(this->position.x) + this->sprite_width > width))
+		{
+			//Move back
+			SDL_Log("Square: Out on X axis");
+			this->position.x -= this->velocity.x;
+			this->velocity.x = 0;
+		}
+
+		if ((this->position.y < 0.0f) || (static_cast<int>(this->position.y) + this->sprite_height > height))
+		{
+			//Move back
+			SDL_Log("Square: Out on Y axis");
+			this->position.y -= this->velocity.y;
+			this->velocity.y = 0;
+		}
+	}
+
+	for (auto& s : sprites)
+	{
+		if (this->id == s->id)
+			continue;
+
+		Vector v = this->position - s->position;
+		const float length = v.length();
+
+		if (this->collider_type == 1 && s->collider_type == 1)
+		{
+			if (length < this->radius + s->radius)
+			{
+				SDL_Log("Collision detected");
+				v.normalize();
+
+				//Separation
+				this->position += (v * (s->radius - length * 0.5f));
+				s->setPosition(s->position - v * (this->radius - length * 0.5f));
+
+				this->setVelocity(Vector(0, 0));
+				s->setVelocity(Vector(0, 0));
+
+				////Reflection
+				//velocity = velocity - v * velocity.dotProduct(v) * 2.0f;
+				//v *= -1.0f;
+				//s->setVelocity(s->velocity - v * s->velocity.dotProduct(v) * 2.0f);
+			}
+		}
+		else if (this->collider_type == 2 && s->collider_type == 2)
+		{
+			const int left = static_cast<int>(this->getPosition().x) + static_cast<int>(this->sprite_width) - static_cast<int>(s->getPosition().x);
+			const int right = static_cast<int>(s->getPosition().x) + static_cast<int>(s->sprite_width) - static_cast<int>(this->getPosition().x);
+			const int top = static_cast<int>(this->getPosition().y) + static_cast<int>(this->sprite_height) - static_cast<int>(s->getPosition().y);
+			const int bottom = static_cast<int>(s->getPosition().y) + static_cast<int>(s->sprite_height) - static_cast<int>(this->getPosition().y);
+
+			if (left == 0 && right == 0 && top == 0 && bottom == 0)
+			{
+				SDL_Log("Collision detected");
+
+				//Separation
+				left < right ? v.x = static_cast<float>(-left) : v.x = static_cast<float>(right);
+				top < bottom ? v.y = static_cast<float>(-top) : v.y = static_cast<float>(bottom);
+
+				this->position += (v * (static_cast<float>(s->sprite_width / 2) - length * 0.5f));
+				s->setPosition(s->position - v * (this->radius - length * 0.5f));
+			}
+		}
+		else if (this->collider_type == 1 && s->collider_type == 2)
+		{
+			if (length < this->radius + s->sprite_width / 2)
+			{
+				SDL_Log("Collision detected");
+				v.normalize();
+
+				//Separation
+				this->position += (v * (s->sprite_width / 2 - length * 0.5f));
+				s->setPosition(s->position - v * (this->radius - length * 0.5f));
+
+				////Reflection
+				//velocity = velocity - v * velocity.dotProduct(v) * 2.0f;
+				//v *= -1.0f;
+				//s->setVelocity(s->velocity - v * s->velocity.dotProduct(v) * 2.0f);
+			}
+		}
+		
+	}
 }
 
 Vector Sprite::getPosition()
