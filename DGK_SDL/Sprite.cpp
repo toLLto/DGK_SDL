@@ -149,48 +149,50 @@ void Sprite::move(const int width, const int height)
 {
 	if (movement_type == 1)
 	{
-		//Move the circle left or right
-		position.x += velocity.x;
+		////Move the circle left or right
+		//position.x += velocity.x;
 
-		//If the circle went too far to the left or right
-		if ((position.x < 0) || (position.x + sprite_width > width))
-		{
-			//Move back
-			position.x -= velocity.x;
-		}
+		////If the circle went too far to the left or right
+		//if ((position.x < 0) || (position.x + sprite_width > width))
+		//{
+		//	//Move back
+		//	position.x -= velocity.x;
+		//}
 
-		//Move the circle up or down
-		position.y += velocity.y;
+		////Move the circle up or down
+		//position.y += velocity.y;
 
-		//If the circle went too far up or down
-		if ((position.y < 0) || (position.y + sprite_height > height))
-		{
-			//Move back
-			position.y -= velocity.y;
-		}
+		////If the circle went too far up or down
+		//if ((position.y < 0) || (position.y + sprite_height > height))
+		//{
+		//	//Move back
+		//	position.y -= velocity.y;
+		//}
+		position += velocity;
 	}
 
 	if (movement_type == 2)
 	{
-		//Move the circle left or right
-		position.x += velocity.x;
+		////Move the circle left or right
+		//position.x += velocity.x;
 
-		//If the circle went too far to the left or right
-		if ((position.x < 0) || (position.x + sprite_width > width))
-		{
-			//Move back
-			position.x -= velocity.x;
-		}
+		////If the circle went too far to the left or right
+		//if ((position.x < 0) || (position.x + sprite_width > width))
+		//{
+		//	//Move back
+		//	position.x -= velocity.x;
+		//}
 
-		//Move the circle up or down
-		position.y += velocity.y;
+		////Move the circle up or down
+		//position.y += velocity.y;
 
-		//If the circle went too far up or down
-		if ((position.y < 0) || (position.y + sprite_height > height))
-		{
-			//Move back
-			position.y -= velocity.y;
-		}
+		////If the circle went too far up or down
+		//if ((position.y < 0) || (position.y + sprite_height > height))
+		//{
+		//	//Move back
+		//	position.y -= velocity.y;
+		//}
+		position += velocity;
 	}
 }
 
@@ -216,6 +218,7 @@ void Sprite::render(SDL_Renderer* gRenderer, Camera& cam, Texture* gSpriteTextur
 
 void Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, const int height)
 {
+
 }
 
 Vector Sprite::getPosition()
