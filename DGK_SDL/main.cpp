@@ -13,25 +13,11 @@ and may not be redistributed without written permission.*/
 #include "Tile.h"
 #include "Sprite.h"
 #include "Camera.h"
+#include "Level.h"
 
 //Screen dimension constants
 const int SCREEN_WIDTH = 1280;
 const int SCREEN_HEIGHT = 720;
-
-//The dimensions of the level
-const int LEVEL_WIDTH = 1600;
-const int LEVEL_HEIGHT = 1600;
-
-//Tile constants
-const int TILE_WIDTH = 100;
-const int TILE_HEIGHT = 100;
-const int TOTAL_TILES = 256;
-const int TOTAL_TILE_SPRITES = 3;
-
-//The different tile sprites
-const int TILE_RED = 0;
-const int TILE_BLACK = 1;
-const int TILE_BROWN = 2;
 
 //Starts up SDL and creates window
 bool init();
@@ -308,9 +294,9 @@ int main(int argc, char* args[])
 
 			//The dot that will be moving around on the screen
 			//Circle circle;
-			Sprite circle(1, 1, 320, 80, gCircleTexture.getWidth(), gCircleTexture.getHeight(), 5.0f, 0.5f);
-			Sprite square(2, 1, 20, 720, gSquareTexture.getWidth(), gSquareTexture.getHeight(), 5.0f, 0.5f);
-			Sprite star(0, 0, 820, 920, gStarTexture.getWidth(), gStarTexture.getHeight(), 5.0f, 0.5f);
+			Sprite circle(0, 1, 1, 320, 80, gCircleTexture.getWidth(), gCircleTexture.getHeight(), 5.0f, 0.5f);
+			Sprite square(1, 2, 2, 20, 720, gSquareTexture.getWidth(), gSquareTexture.getHeight(), 5.0f, 0.5f);
+			Sprite star(2, 0, 0, 820, 920, gStarTexture.getWidth(), gStarTexture.getHeight(), 5.0f, 0.5f);
 			sprites.push_back(&circle);
 			sprites.push_back(&square);
 			sprites.push_back(&star);

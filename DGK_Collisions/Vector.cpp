@@ -168,3 +168,16 @@ void Vector::operator-=(const Vector& v)
 {
 	subtract(v);
 }
+
+bool Vector::isEqual(const Vector& v)
+{
+	if (this->x == v.x && this->y == v.y)
+		return true;
+
+	return false;
+}
+
+void Vector::operator==(const Vector& v)
+{
+	isEqual(v);
+}

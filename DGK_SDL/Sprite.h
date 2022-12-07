@@ -42,7 +42,7 @@ public:
 	// Smoothing
 	float sprite_smooth;
 
-	Sprite(unsigned int mt, unsigned int ct, unsigned int x, unsigned int y, unsigned int width, unsigned int height, float vel, float smooth);
+	Sprite(unsigned int _id, unsigned int mt, unsigned int ct, unsigned int x, unsigned int y, unsigned int width, unsigned int height, float vel, float smooth);
 
 	//Takes key presses and adjusts the sprite's velocity
 	void handleEvent(SDL_Event& e);
@@ -52,6 +52,8 @@ public:
 
 	//Shows the sprite on the screen
 	void render(SDL_Renderer* gRenderer, Camera& cam, Texture* gSpriteTexture);
+
+	int clamp(int x, int min, int max);
 
 	//Checks if this circle collides with another
 	void checkCollision(std::vector<Sprite*>& sprites, const int width, const int height);

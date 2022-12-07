@@ -1,6 +1,6 @@
 #include "Sprite.h"
 
-Sprite::Sprite(unsigned int _mt, unsigned int _ct, unsigned int _x, unsigned int _y, unsigned int _width, unsigned int _height, float _vel, float _smooth)
+Sprite::Sprite(unsigned int _id, unsigned int _mt, unsigned int _ct, unsigned int _x, unsigned int _y, unsigned int _width, unsigned int _height, float _vel, float _smooth)
 {
 	movement_type = _mt;
 	collider_type = _ct;
@@ -8,6 +8,7 @@ Sprite::Sprite(unsigned int _mt, unsigned int _ct, unsigned int _x, unsigned int
 	sprite_height = _height;
 	sprite_vel = _vel;
 	sprite_smooth = _smooth;
+	this->id = _id;
 
 	if (_ct != 1)
 		this->radius = 0;
@@ -216,6 +217,16 @@ void Sprite::render(SDL_Renderer* gRenderer, Camera& cam, Texture* gSpriteTextur
 	}
 }
 
+int Sprite::clamp(int x, int min, int max)
+{
+	if (x < min)
+		return min;
+	else if (x > max)
+		return max;
+	else if (x > min && x < max)
+		return x;
+}
+
 void Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, const int height)
 {
 	if (this->collider_type == 1)
@@ -263,14 +274,16 @@ void Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, cons
 		if (this->id == s->id)
 			continue;
 
-		Vector v = this->position - s->position;
-		const float length = v.length();
+		Vector v;
 
 		if (this->collider_type == 1 && s->collider_type == 1)
 		{
+			v = this->position - s->position;
+			const float length = v.length();
+
 			if (length < this->radius + s->radius)
 			{
-				SDL_Log("Collision detected");
+				SDL_Log("Circle collision detected");
 				v.normalize();
 
 				//Separation
@@ -278,7 +291,7 @@ void Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, cons
 				s->setPosition(s->position - v * (this->radius - length * 0.5f));
 
 				this->setVelocity(Vector(0, 0));
-				s->setVelocity(Vector(0, 0));
+				//s->setVelocity(Vector(0, 0));
 
 				////Reflection
 				//velocity = velocity - v * velocity.dotProduct(v) * 2.0f;
@@ -293,33 +306,73 @@ void Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, cons
 			const int top = static_cast<int>(this->getPosition().y) + static_cast<int>(this->sprite_height) - static_cast<int>(s->getPosition().y);
 			const int bottom = static_cast<int>(s->getPosition().y) + static_cast<int>(s->sprite_height) - static_cast<int>(this->getPosition().y);
 
-			if (left == 0 && right == 0 && top == 0 && bottom == 0)
+			if (left > 0 && right > 0 && top > 0 && bottom > 0)
 			{
-				SDL_Log("Collision detected");
+				SDL_Log("Square collision detected");
 
 				//Separation
-				left < right ? v.x = static_cast<float>(-left) : v.x = static_cast<float>(right);
-				top < bottom ? v.y = static_cast<float>(-top) : v.y = static_cast<float>(bottom);
+				left < right ? v.x = -left : v.x = right;
+				top < bottom ? v.y = -top : v.y = bottom;
+				v.normalize();
 
-				this->position += (v * (static_cast<float>(s->sprite_width / 2) - length * 0.5f));
-				s->setPosition(s->position - v * (this->radius - length * 0.5f));
+				this->position += v;
+				//s->setPosition(s->position - v * (this->sprite_width / 2 - length * 0.5f));
 			}
 		}
 		else if (this->collider_type == 1 && s->collider_type == 2)
 		{
-			if (length < this->radius + s->sprite_width / 2)
+			Vector f = Vector(
+				clamp(this->getPosition().x + this->radius, s->getPosition().x, s->getPosition().x + s->sprite_width),
+				clamp(this->getPosition().y + this->radius, s->getPosition().y, s->getPosition().y + s->sprite_height)
+			);
+			Vector c = Vector(this->getPosition().x + this->radius, this->getPosition().y + this->radius);
+			Vector tmp = c - f;
+			//v = v - f;
+			const float length = tmp.length();
+
+			if (length < this->radius)
 			{
-				SDL_Log("Collision detected");
-				v.normalize();
+				SDL_Log("Circle / square collision detected");
 
-				//Separation
-				this->position += (v * (s->sprite_width / 2 - length * 0.5f));
-				s->setPosition(s->position - v * (this->radius - length * 0.5f));
+				if (this->getPosition().x + this->radius == f.x && this->getPosition().y + this->radius == f.y)
+				{
+					const int left = static_cast<int>(this->getPosition().x) + static_cast<int>(this->radius) - static_cast<int>(s->getPosition().x) + static_cast<int>(this->radius);
+					const int right = static_cast<int>(s->getPosition().x) + static_cast<int>(s->sprite_width) - static_cast<int>(this->getPosition().x) + static_cast<int>(this->radius * 2);
+					const int top = static_cast<int>(this->getPosition().y) + static_cast<int>(this->radius) - static_cast<int>(s->getPosition().y) + static_cast<int>(this->radius);
+					const int bottom = static_cast<int>(s->getPosition().y) + static_cast<int>(s->sprite_height) - static_cast<int>(this->getPosition().y) + static_cast<int>(this->radius * 2);
 
-				////Reflection
-				//velocity = velocity - v * velocity.dotProduct(v) * 2.0f;
-				//v *= -1.0f;
-				//s->setVelocity(s->velocity - v * s->velocity.dotProduct(v) * 2.0f);
+					//Separation
+					left < right ? v.x = -left : v.x = right;
+					top < bottom ? v.y = -top : v.y = bottom;
+
+					if (abs(v.x) > abs(v.y))
+						v.x = 0;
+					else
+						v.y = 0;
+
+					//v.normalize();
+
+					this->position += v;
+				}
+				else
+				{
+					Vector res = c - f;
+					float l = res.length();
+					if (l == 0)
+						res = Vector(0, 0);
+
+					res /= l;
+					//res = res * (this->radius - l);
+
+					//v.normalize();
+
+					//Separation
+					this->position += (res * (s->sprite_width / 2 - length * 0.5f));
+					s->setPosition(s->position - res * (this->radius - length * 0.5f));
+
+					//this->setVelocity(Vector(0, 0));
+					//this->position += res;
+				}
 			}
 		}
 		

@@ -36,5 +36,8 @@ public:
 	void operator+=(const Vector& v);
 	void subtract(const Vector& v);
 	void operator-=(const Vector& v);
+
+	bool isEqual(const Vector& v);
+	void operator==(const Vector& v);
 };
 #endif
