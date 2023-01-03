@@ -96,5 +96,8 @@
     <None Include="map.map">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="test.map">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>

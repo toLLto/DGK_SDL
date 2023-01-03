@@ -9,7 +9,6 @@ and may not be redistributed without written permission.*/
 #include <vector>
 #include <fstream>
 #include "Texture.h"
-#include "Square.h"
 #include "Tile.h"
 #include "Sprite.h"
 #include "Camera.h"
@@ -201,7 +200,7 @@ bool setTiles(Tile* tiles[])
 			//Read tile from map file
 			map >> tileType;
 
-			//If the was a problem in reading the map
+			//If there was a problem in reading the map
 			if (map.fail())
 			{
 				//Stop loading map
@@ -294,8 +293,8 @@ int main(int argc, char* args[])
 
 			//The dot that will be moving around on the screen
 			//Circle circle;
-			Sprite circle(0, 1, 1, 320, 80, gCircleTexture.getWidth(), gCircleTexture.getHeight(), 5.0f, 0.5f);
-			Sprite square(1, 2, 2, 20, 720, gSquareTexture.getWidth(), gSquareTexture.getHeight(), 5.0f, 0.5f);
+			Sprite circle(0, 1, 1, 320, 180, gCircleTexture.getWidth(), gCircleTexture.getHeight(), 5.0f, 0.5f);
+			Sprite square(1, 2, 2, 120, 700, gSquareTexture.getWidth(), gSquareTexture.getHeight(), 5.0f, 0.5f);
 			Sprite star(2, 0, 0, 820, 920, gStarTexture.getWidth(), gStarTexture.getHeight(), 5.0f, 0.5f);
 			sprites.push_back(&circle);
 			sprites.push_back(&square);
@@ -328,6 +327,14 @@ int main(int argc, char* args[])
 				cam.move(circle, square, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
 
 				//Check collisions
+				for (int i = 0; i < TOTAL_TILES; ++i)
+				{
+					if (tileSet[i]->getType() == 1)
+					{
+						tileSet[i]->checkCollision(sprites);
+					}
+				}
+
 				for (auto& s : sprites)
 				{
 					s->checkCollision(sprites, LEVEL_WIDTH, LEVEL_HEIGHT);

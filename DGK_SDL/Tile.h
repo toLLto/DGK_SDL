@@ -19,12 +19,15 @@ public:
 	//Shows the tile
 	void render(SDL_Renderer* gRenderer, Camera& camera, Texture* gTileTexture, SDL_Rect gTileClips[3]);
 
+	// Check collisions
+	void checkCollision(std::vector<Sprite*>& sprites);
+
 	//Get the tile type
 	int getType();
 
 private:
 	//The attributes of the tile
-	SDL_Rect mBox;
+	int x, y, w, h;
 
 	//The tile type
 	int mType;

@@ -150,49 +150,11 @@ void Sprite::move(const int width, const int height)
 {
 	if (movement_type == 1)
 	{
-		////Move the circle left or right
-		//position.x += velocity.x;
-
-		////If the circle went too far to the left or right
-		//if ((position.x < 0) || (position.x + sprite_width > width))
-		//{
-		//	//Move back
-		//	position.x -= velocity.x;
-		//}
-
-		////Move the circle up or down
-		//position.y += velocity.y;
-
-		////If the circle went too far up or down
-		//if ((position.y < 0) || (position.y + sprite_height > height))
-		//{
-		//	//Move back
-		//	position.y -= velocity.y;
-		//}
 		position += velocity;
 	}
 
 	if (movement_type == 2)
 	{
-		////Move the circle left or right
-		//position.x += velocity.x;
-
-		////If the circle went too far to the left or right
-		//if ((position.x < 0) || (position.x + sprite_width > width))
-		//{
-		//	//Move back
-		//	position.x -= velocity.x;
-		//}
-
-		////Move the circle up or down
-		//position.y += velocity.y;
-
-		////If the circle went too far up or down
-		//if ((position.y < 0) || (position.y + sprite_height > height))
-		//{
-		//	//Move back
-		//	position.y -= velocity.y;
-		//}
 		position += velocity;
 	}
 }
@@ -229,46 +191,6 @@ int Sprite::clamp(int x, int min, int max)
 
 void Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, const int height)
 {
-	if (this->collider_type == 1)
-	{
-		// Sprite went outside boundaries
-		if ((this->position.x < 0.0f) || (static_cast<int>(this->position.x) + this->sprite_width > width))
-		{
-			//Move back
-			SDL_Log("Circle: Out on X axis");
-			this->position.x -= this->velocity.x;
-			this->velocity.x = 0;
-		}
-
-		if ((this->position.y < 0.0f) || (static_cast<int>(this->position.y) + this->sprite_height > height))
-		{
-			//Move back
-			SDL_Log("Circle: Out on Y axis");
-			this->position.y -= this->velocity.y;
-			this->velocity.y = 0;
-		}
-	}
-
-	if (this->collider_type == 2)
-	{
-		// Sprite went outside boundaries
-		if ((this->position.x < 0.0f) || (static_cast<int>(this->position.x) + this->sprite_width > width))
-		{
-			//Move back
-			SDL_Log("Square: Out on X axis");
-			this->position.x -= this->velocity.x;
-			this->velocity.x = 0;
-		}
-
-		if ((this->position.y < 0.0f) || (static_cast<int>(this->position.y) + this->sprite_height > height))
-		{
-			//Move back
-			SDL_Log("Square: Out on Y axis");
-			this->position.y -= this->velocity.y;
-			this->velocity.y = 0;
-		}
-	}
-
 	for (auto& s : sprites)
 	{
 		if (this->id == s->id)
@@ -376,6 +298,46 @@ void Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, cons
 			}
 		}
 		
+	}
+
+	if (this->collider_type == 1)
+	{
+		// Sprite went outside boundaries
+		if ((this->position.x < 0.0f) || (static_cast<int>(this->position.x) + this->sprite_width > width))
+		{
+			//Move back
+			SDL_Log("Circle: Out on X axis");
+			this->position.x -= this->velocity.x;
+			this->velocity.x = 0;
+		}
+
+		if ((this->position.y < 0.0f) || (static_cast<int>(this->position.y) + this->sprite_height > height))
+		{
+			//Move back
+			SDL_Log("Circle: Out on Y axis");
+			this->position.y -= this->velocity.y;
+			this->velocity.y = 0;
+		}
+	}
+
+	if (this->collider_type == 2)
+	{
+		// Sprite went outside boundaries
+		if ((this->position.x < 0.0f) || (static_cast<int>(this->position.x) + this->sprite_width > width))
+		{
+			//Move back
+			SDL_Log("Square: Out on X axis");
+			this->position.x -= this->velocity.x;
+			this->velocity.x = 0;
+		}
+
+		if ((this->position.y < 0.0f) || (static_cast<int>(this->position.y) + this->sprite_height > height))
+		{
+			//Move back
+			SDL_Log("Square: Out on Y axis");
+			this->position.y -= this->velocity.y;
+			this->velocity.y = 0;
+		}
 	}
 }
 
