@@ -141,3 +141,23 @@ int Tile::getType()
 {
 	return mType;
 }
+
+int Tile::getX()
+{
+	return x;
+}
+
+int Tile::getY()
+{
+	return y;
+}
+
+int Tile::getW()
+{
+	return w;
+}
+
+int Tile::getH()
+{
+	return h;
+}

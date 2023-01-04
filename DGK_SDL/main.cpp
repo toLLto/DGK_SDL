@@ -293,9 +293,28 @@ int main(int argc, char* args[])
 
 			//The dot that will be moving around on the screen
 			//Circle circle;
-			Sprite circle(0, 1, 1, 320, 180, gCircleTexture.getWidth(), gCircleTexture.getHeight(), 5.0f, 0.5f);
-			Sprite square(1, 2, 2, 120, 700, gSquareTexture.getWidth(), gSquareTexture.getHeight(), 5.0f, 0.5f);
-			Sprite star(2, 0, 0, 820, 920, gStarTexture.getWidth(), gStarTexture.getHeight(), 5.0f, 0.5f);
+			Sprite circle(0, 1, 1, rand() % 1500 + 30, rand() % 1500 + 30, gCircleTexture.getWidth(), gCircleTexture.getHeight(), 5.0f, 0.5f);
+			Sprite square(1, 2, 2, rand() % 1500 + 30, rand() % 1500 + 30, gSquareTexture.getWidth(), gSquareTexture.getHeight(), 5.0f, 0.5f);
+
+			int starX = rand() % 1500 + 20;
+			int starY = rand() % 1500 + 20;
+			for (int i = 0; i < TOTAL_TILES; ++i)
+			{
+				if (starX > tileSet[i]->getX() && starX < tileSet[i]->getX() + tileSet[i]->getW() && starY > tileSet[i]->getY() && starY < tileSet[i]->getY() + tileSet[i]->getH())
+				{
+					if (tileSet[i]->getType() != 2)
+					{
+						starX = rand() % 1500 + 20;
+						starY = rand() % 1500 + 20;
+						continue;
+					}
+					
+					starX = tileSet[i]->getX() + 20;
+					starY = tileSet[i]->getY() + 20;
+				}
+			}
+
+			Sprite star(2, 0, 0, starX, starY, gStarTexture.getWidth(), gStarTexture.getHeight(), 5.0f, 0.5f);
 			sprites.push_back(&circle);
 			sprites.push_back(&square);
 			sprites.push_back(&star);
@@ -327,6 +346,8 @@ int main(int argc, char* args[])
 				cam.move(circle, square, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
 
 				//Check collisions
+				bool levelComplete;
+
 				for (int i = 0; i < TOTAL_TILES; ++i)
 				{
 					if (tileSet[i]->getType() == 1)
@@ -337,7 +358,33 @@ int main(int argc, char* args[])
 
 				for (auto& s : sprites)
 				{
-					s->checkCollision(sprites, LEVEL_WIDTH, LEVEL_HEIGHT);
+					 levelComplete = s->checkCollision(sprites, LEVEL_WIDTH, LEVEL_HEIGHT);
+
+					 if (levelComplete)
+					 {
+						 int starX = rand() % 1500 + 20;
+						 int starY = rand() % 1500 + 20;
+
+						 for (int i = 0; i < TOTAL_TILES; ++i)
+						 {
+							 if (starX > tileSet[i]->getX() && starX < tileSet[i]->getX() + tileSet[i]->getW() && starY > tileSet[i]->getY() && starY < tileSet[i]->getY() + tileSet[i]->getH())
+							 {
+								 if (tileSet[i]->getType() != 2)
+								 {
+									 starX = rand() % 1500 + 20;
+									 starY = rand() % 1500 + 20;
+									 continue;
+								 }
+
+								 starX = tileSet[i]->getX() + 20;
+								 starY = tileSet[i]->getY() + 20;
+							 }
+						 }
+
+						 sprites.at(0)->setPosition(Vector(rand() % 1500 + 30, rand() % 1500 + 30));
+						 sprites.at(1)->setPosition(Vector(rand() % 1500 + 30, rand() % 1500 + 30));
+						 sprites.at(2)->setPosition(Vector(starX, starY));
+					 }
 				}
 
 				//Clear screen

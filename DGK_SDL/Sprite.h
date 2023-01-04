@@ -56,7 +56,7 @@ public:
 	int clamp(int x, int min, int max);
 
 	//Checks if this circle collides with another
-	void checkCollision(std::vector<Sprite*>& sprites, const int width, const int height);
+	bool checkCollision(std::vector<Sprite*>& sprites, const int width, const int height);
 
 	Vector getPosition();
 	Vector getVelocity();
