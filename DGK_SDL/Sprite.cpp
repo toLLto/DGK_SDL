@@ -191,6 +191,32 @@ int Sprite::clamp(int x, int min, int max)
 
 bool Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, const int height)
 {
+	if (this->collider_type == 0)
+	{
+		int left = static_cast<int>(this->getPosition().x) + static_cast<int>(this->sprite_width) - static_cast<int>(sprites.at(0)->getPosition().x);
+		int right = static_cast<int>(sprites.at(0)->getPosition().x) + static_cast<int>(sprites.at(0)->sprite_width) - static_cast<int>(this->getPosition().x);
+		int top = static_cast<int>(this->getPosition().y) + static_cast<int>(this->sprite_height) - static_cast<int>(sprites.at(0)->getPosition().y);
+		int bottom = static_cast<int>(sprites.at(0)->getPosition().y) + static_cast<int>(sprites.at(0)->sprite_height) - static_cast<int>(this->getPosition().y);
+
+		if (left > 0 && right > 0 && top > 0 && bottom > 0)
+		{
+			SDL_Log("Star reached");
+
+			return true;
+		}
+
+		left = static_cast<int>(this->getPosition().x) + static_cast<int>(this->sprite_width) - static_cast<int>(sprites.at(1)->getPosition().x);
+		right = static_cast<int>(sprites.at(1)->getPosition().x) + static_cast<int>(sprites.at(1)->sprite_width) - static_cast<int>(this->getPosition().x);
+		top = static_cast<int>(this->getPosition().y) + static_cast<int>(this->sprite_height) - static_cast<int>(sprites.at(1)->getPosition().y);
+		bottom = static_cast<int>(sprites.at(1)->getPosition().y) + static_cast<int>(sprites.at(1)->sprite_height) - static_cast<int>(this->getPosition().y);
+		if (left > 0 && right > 0 && top > 0 && bottom > 0)
+		{
+			SDL_Log("Star reached");
+
+			return true;
+		}
+	}
+
 	for (auto& s : sprites)
 	{
 		if (this->id == s->id)
@@ -297,7 +323,7 @@ bool Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, cons
 				}
 			}
 		}
-		else if (this->collider_type == 0 && s->collider_type == 1)
+		/*else if (this->collider_type == 0)
 		{
 			const int left = static_cast<int>(this->getPosition().x) + static_cast<int>(this->sprite_width) - static_cast<int>(s->getPosition().x);
 			const int right = static_cast<int>(s->getPosition().x) + static_cast<int>(s->sprite_width) - static_cast<int>(this->getPosition().x);
@@ -306,26 +332,11 @@ bool Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, cons
 
 			if (left > 0 && right > 0 && top > 0 && bottom > 0)
 			{
-				SDL_Log("Star reached by circle");
+				SDL_Log("Star reached");
 
 				return true;
 			}
-		}
-		else if (this->collider_type == 0 && s->collider_type == 2)
-		{
-			const int left = static_cast<int>(this->getPosition().x) + static_cast<int>(this->sprite_width) - static_cast<int>(s->getPosition().x);
-			const int right = static_cast<int>(s->getPosition().x) + static_cast<int>(s->sprite_width) - static_cast<int>(this->getPosition().x);
-			const int top = static_cast<int>(this->getPosition().y) + static_cast<int>(this->sprite_height) - static_cast<int>(s->getPosition().y);
-			const int bottom = static_cast<int>(s->getPosition().y) + static_cast<int>(s->sprite_height) - static_cast<int>(this->getPosition().y);
-			SDL_Log("wtf");
-
-			if (left > 0 && right > 0 && top > 0 && bottom > 0)
-			{
-				SDL_Log("Star reached by square");
-
-				return true;
-			}
-		}
+		}*/
 
 		return false;
 	}
