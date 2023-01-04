@@ -25,6 +25,8 @@ public:
 	//Get the tile type
 	int getType();
 
+	int clamp(int x, int min, int max);
+
 private:
 	//The attributes of the tile
 	int x, y, w, h;
