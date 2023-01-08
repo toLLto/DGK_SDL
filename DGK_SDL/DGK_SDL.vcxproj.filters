@@ -24,12 +24,6 @@
     <ClCompile Include="Timer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Circle.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Square.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Tile.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -47,33 +41,10 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Image Include="dot.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="square.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="tiles.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Character1.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-    <Image Include="Character2.png">
-      <Filter>Resource Files</Filter>
-    </Image>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Texture.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Timer.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Circle.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Square.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Tile.h">
@@ -99,5 +70,13 @@
     <None Include="test.map">
       <Filter>Resource Files</Filter>
     </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="DGK_sprite_sheet.png">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="Character.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

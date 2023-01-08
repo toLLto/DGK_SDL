@@ -32,7 +32,7 @@ int Tile::clamp(int x, int min, int max)
 
 void Tile::checkCollision(std::vector<Sprite*>& sprites)
 {
-	if (this->mType == 1)
+	if (this->mType != 0)
 	{
 		for (auto& s : sprites)
 		{
@@ -51,8 +51,8 @@ void Tile::checkCollision(std::vector<Sprite*>& sprites)
 
 				if (length < s->getRadius())
 				{
-					SDL_Log("Circle/Tile collision detected");
-					SDL_Log("BEFORE SEPARATION! Tile position: (%i, %i) Sprite position: (%f, %f)", this->x, this->y, s->getPosition().x, s->getPosition().y);
+					SDL_Log("Circle/Tile: Collision detected");
+					//SDL_Log("BEFORE SEPARATION! Tile position: (%i, %i) Sprite position: (%f, %f)", this->x, this->y, s->getPosition().x, s->getPosition().y);
 					s->setVelocity(Vector(0, 0));
 
 					if (s->getPosition().x + s->getRadius() == f.x && s->getPosition().y + s->getRadius() == f.y)
@@ -98,7 +98,7 @@ void Tile::checkCollision(std::vector<Sprite*>& sprites)
 						//this->setVelocity(Vector(0, 0));
 						//this->position += res;
 					}
-					SDL_Log("AFTER SEPARATION! Tile position: (%i, %i) Sprite position: (%f, %f)", this->x, this->y, s->getPosition().x, s->getPosition().y);
+					//SDL_Log("AFTER SEPARATION! Tile position: (%i, %i) Sprite position: (%f, %f)", this->x, this->y, s->getPosition().x, s->getPosition().y);
 				}
 			}
 			else if (s->collider_type == 2)
@@ -112,8 +112,8 @@ void Tile::checkCollision(std::vector<Sprite*>& sprites)
 
 				if (left > 0 && right > 0 && top > 0 && bottom > 0)
 				{
-					SDL_Log("Square/Tile collision detected");
-					SDL_Log("BEFORE SEPARATION! Tile position: (%i, %i) Sprite position: (%f, %f)", this->x, this->y, s->getPosition().x, s->getPosition().y);
+					SDL_Log("Square/Tile: Collision detected");
+					//SDL_Log("BEFORE SEPARATION! Tile position: (%i, %i) Sprite position: (%f, %f)", this->x, this->y, s->getPosition().x, s->getPosition().y);
 					s->setVelocity(Vector(0, 0));
 
 					// Separation
@@ -129,7 +129,7 @@ void Tile::checkCollision(std::vector<Sprite*>& sprites)
 					Vector newPosition = s->getPosition() + v;
 					s->setPosition(newPosition);
 					
-					SDL_Log("AFTER SEPARATION! Tile position: (%i, %i) Sprite position: (%f, %f)", this->x, this->y, s->getPosition().x, s->getPosition().y);
+					//SDL_Log("AFTER SEPARATION! Tile position: (%i, %i) Sprite position: (%f, %f)", this->x, this->y, s->getPosition().x, s->getPosition().y);
 				}
 				
 			}

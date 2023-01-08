@@ -33,20 +33,20 @@ void Sprite::handleEvent(SDL_Event& e)
 			{
 			case SDLK_w:
 				velocity.y -= sprite_vel;
-				SDL_Log("W was pressed");
+				//SDL_Log("W was pressed");
 				break;
 			case SDLK_s:
 				velocity.y += sprite_vel;
-				SDL_Log("S was pressed");
+				//SDL_Log("S was pressed");
 				break;
 			case SDLK_a:
 				velocity.x -= sprite_vel;
-				SDL_Log("A was pressed");
+				//SDL_Log("A was pressed");
 				direction = true;
 				break;
 			case SDLK_d:
 				velocity.x += sprite_vel;
-				SDL_Log("D was pressed");
+				//SDL_Log("D was pressed");
 				direction = false;
 				break;
 			}
@@ -59,19 +59,19 @@ void Sprite::handleEvent(SDL_Event& e)
 			{
 			case SDLK_w:
 				velocity.y = 0;
-				SDL_Log("W was released");
+				//SDL_Log("W was released");
 				break;
 			case SDLK_s:
 				velocity.y = 0;
-				SDL_Log("S was released");
+				//SDL_Log("S was released");
 				break;
 			case SDLK_a:
 				velocity.x = 0;
-				SDL_Log("A was released");
+				//SDL_Log("A was released");
 				break;
 			case SDLK_d:
 				velocity.x = 0;
-				SDL_Log("D was released");
+				//SDL_Log("D was released");
 				break;
 			}
 		}
@@ -86,20 +86,20 @@ void Sprite::handleEvent(SDL_Event& e)
 			{
 			case SDLK_UP:
 				velocity.y -= sprite_vel;
-				SDL_Log("Up was pressed");
+				//SDL_Log("Up was pressed");
 				break;
 			case SDLK_DOWN:
 				velocity.y += sprite_vel;
-				SDL_Log("Down was pressed");
+				//SDL_Log("Down was pressed");
 				break;
 			case SDLK_LEFT:
 				velocity.x -= sprite_vel;
-				SDL_Log("Left was pressed");
+				//SDL_Log("Left was pressed");
 				direction = true;
 				break;
 			case SDLK_RIGHT:
 				velocity.x += sprite_vel;
-				SDL_Log("Right was pressed");
+				//SDL_Log("Right was pressed");
 				direction = false;
 				break;
 			}
@@ -112,19 +112,19 @@ void Sprite::handleEvent(SDL_Event& e)
 			{
 			case SDLK_UP:
 				velocity.y = 0;
-				SDL_Log("Up was released");
+				//SDL_Log("Up was released");
 				break;
 			case SDLK_DOWN:
 				velocity.y = 0;
-				SDL_Log("Down was released");
+				//SDL_Log("Down was released");
 				break;
 			case SDLK_LEFT:
 				velocity.x = 0;
-				SDL_Log("Left was released");
+				//SDL_Log("Left was released");
 				break;
 			case SDLK_RIGHT:
 				velocity.x = 0;
-				SDL_Log("Right was released");
+				//SDL_Log("Right was released");
 				break;
 			}
 		}
@@ -141,22 +141,14 @@ void Sprite::handleEvent(SDL_Event& e)
 			position.x = x;
 			position.y = y;
 
-			SDL_Log("Mouse is at [%d, %d]", x, y);
+			//SDL_Log("Mouse is at [%d, %d]", x, y);
 		}
 	}
 }
 
 void Sprite::move(const int width, const int height)
 {
-	if (movement_type == 1)
-	{
-		position += velocity;
-	}
-
-	if (movement_type == 2)
-	{
-		position += velocity;
-	}
+	position += velocity;
 }
 
 void Sprite::render(SDL_Renderer* gRenderer, Camera& cam, Texture* gSpriteTexture)
@@ -323,20 +315,6 @@ bool Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, cons
 				}
 			}
 		}
-		/*else if (this->collider_type == 0)
-		{
-			const int left = static_cast<int>(this->getPosition().x) + static_cast<int>(this->sprite_width) - static_cast<int>(s->getPosition().x);
-			const int right = static_cast<int>(s->getPosition().x) + static_cast<int>(s->sprite_width) - static_cast<int>(this->getPosition().x);
-			const int top = static_cast<int>(this->getPosition().y) + static_cast<int>(this->sprite_height) - static_cast<int>(s->getPosition().y);
-			const int bottom = static_cast<int>(s->getPosition().y) + static_cast<int>(s->sprite_height) - static_cast<int>(this->getPosition().y);
-
-			if (left > 0 && right > 0 && top > 0 && bottom > 0)
-			{
-				SDL_Log("Star reached");
-
-				return true;
-			}
-		}*/
 
 		return false;
 	}

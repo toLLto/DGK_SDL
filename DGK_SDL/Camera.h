@@ -15,7 +15,7 @@ public:
 
 	~Camera();
 
-	void move(Sprite& s1, Sprite& s2, const int sWidth, const int sHeight, const int lWidth, const int lHeight, float alpha);
+	void move(Sprite& s1, const int sWidth, const int sHeight, const int lWidth, const int lHeight, float alpha);
 
 	double getScale();
 

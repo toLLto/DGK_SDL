@@ -143,29 +143,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
-    <ClCompile Include="Circle.cpp" />
     <ClCompile Include="Level.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Sprite.cpp" />
-    <ClCompile Include="Square.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="Tile.cpp" />
     <ClCompile Include="Timer.cpp" />
     <ClCompile Include="Vector.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="Character1.png" />
-    <Image Include="Character2.png" />
-    <Image Include="dot.bmp" />
-    <Image Include="square.bmp" />
-    <Image Include="tiles.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="Camera.h" />
-    <ClInclude Include="Circle.h" />
     <ClInclude Include="Level.h" />
     <ClInclude Include="Sprite.h" />
-    <ClInclude Include="Square.h" />
     <ClInclude Include="Texture.h" />
     <ClInclude Include="Tile.h" />
     <ClInclude Include="Timer.h" />
@@ -174,6 +163,10 @@
   <ItemGroup>
     <None Include="map.map" />
     <None Include="test.map" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Character.png" />
+    <Image Include="DGK_sprite_sheet.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

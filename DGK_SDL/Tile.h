@@ -10,8 +10,8 @@ class Tile
 {
 public:
 	//Tile constants
-	const int TILE_WIDTH = 100;
-	const int TILE_HEIGHT = 100;
+	const int TILE_WIDTH = 32;
+	const int TILE_HEIGHT = 32;
 
 	//Initializes position and type
 	Tile(int x, int y, int tileType);

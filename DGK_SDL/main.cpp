@@ -4,7 +4,7 @@ and may not be redistributed without written permission.*/
 //Using SDL, SDL_image, standard IO, and strings
 #include <SDL.h>
 #include <SDL_image.h>
-#include <stdio.h>
+#include <cstdio>
 #include <string>
 #include <vector>
 #include <fstream>
@@ -37,9 +37,7 @@ SDL_Window* gWindow = NULL;
 SDL_Renderer* gRenderer = NULL;
 
 //Scene textures
-Texture gCircleTexture;
-Texture gSquareTexture;
-Texture gStarTexture;
+Texture gCharacterTexture;
 Texture gTileTexture;
 SDL_Rect gTileClips[TOTAL_TILE_SPRITES];
 
@@ -105,31 +103,17 @@ bool loadMedia(Tile* tiles[])
 	//Loading success flag
 	bool success = true;
 
-	//Load first sprite texture
-	if (!gSquareTexture.loadFromFile("square.png", gRenderer))
+	//Load sprite texture
+	if (!gCharacterTexture.loadFromFile("Character.png", gRenderer))
 	{
-		printf("Failed to load dot texture!\n");
-		success = false;
-	}
-
-	//Load second sprite texture
-	if (!gCircleTexture.loadFromFile("circle.png", gRenderer))
-	{
-		printf("Failed to load dot texture!\n");
-		success = false;
-	}
-
-	//Load third sprite texture
-	if (!gStarTexture.loadFromFile("star.png", gRenderer))
-	{
-		printf("Failed to load dot texture!\n");
+		printf("Failed to load character texture!\n");
 		success = false;
 	}
 
 	//Load tile texture
-	if (!gTileTexture.loadFromFile("tiles.png", gRenderer))
+	if (!gTileTexture.loadFromFile("DGK_sprite_sheet.png", gRenderer))
 	{
-		printf("Failed to load square texture!\n");
+		printf("Failed to load sprite sheet!\n");
 		success = false;
 	}
 
@@ -156,9 +140,7 @@ void close(Tile* tiles[])
 	}
 
 	//Free loaded images
-	gCircleTexture.free();
-	gSquareTexture.free();
-	gStarTexture.free();
+	gCharacterTexture.free();
 	gTileTexture.free();
 
 	//Destroy window	
@@ -181,7 +163,7 @@ bool setTiles(Tile* tiles[])
 	int x = 0, y = 0;
 
 	//Open the map
-	std::ifstream map("map.map");
+	std::ifstream map("test.map");
 
 	//If the map couldn't be loaded
 	if (map.fail())
@@ -240,20 +222,20 @@ bool setTiles(Tile* tiles[])
 		//Clip the sprite sheet
 		if (tilesLoaded)
 		{
-			gTileClips[TILE_RED].x = 0;
-			gTileClips[TILE_RED].y = 0;
-			gTileClips[TILE_RED].w = TILE_WIDTH;
-			gTileClips[TILE_RED].h = TILE_HEIGHT;
+			gTileClips[TILE_BLANK].x = 0;
+			gTileClips[TILE_BLANK].y = 32;
+			gTileClips[TILE_BLANK].w = TILE_WIDTH;
+			gTileClips[TILE_BLANK].h = TILE_HEIGHT;
 
-			gTileClips[TILE_BLACK].x = 0;
-			gTileClips[TILE_BLACK].y = 100;
-			gTileClips[TILE_BLACK].w = TILE_WIDTH;
-			gTileClips[TILE_BLACK].h = TILE_HEIGHT;
+			gTileClips[TILE_1].x = 32;
+			gTileClips[TILE_1].y = 32;
+			gTileClips[TILE_1].w = TILE_WIDTH;
+			gTileClips[TILE_1].h = TILE_HEIGHT;
 
-			gTileClips[TILE_BROWN].x = 0;
-			gTileClips[TILE_BROWN].y = 200;
-			gTileClips[TILE_BROWN].w = TILE_WIDTH;
-			gTileClips[TILE_BROWN].h = TILE_HEIGHT;
+			gTileClips[TILE_2].x = 64;
+			gTileClips[TILE_2].y = 32;
+			gTileClips[TILE_2].w = TILE_WIDTH;
+			gTileClips[TILE_2].h = TILE_HEIGHT;
 		}
 	}
 
@@ -291,36 +273,13 @@ int main(int argc, char* args[])
 
 			srand(time(nullptr));
 
-			//The dot that will be moving around on the screen
-			//Circle circle;
-			Sprite circle(0, 1, 1, rand() % 1500 + 30, rand() % 1500 + 30, gCircleTexture.getWidth(), gCircleTexture.getHeight(), 5.0f, 0.5f);
-			Sprite square(1, 2, 2, rand() % 1500 + 30, rand() % 1500 + 30, gSquareTexture.getWidth(), gSquareTexture.getHeight(), 5.0f, 0.5f);
+			// Sprites
+			Sprite character(0, 1, 2, 64, 64, gCharacterTexture.getWidth(), gCharacterTexture.getHeight(), 5.0f, 0.5f);
 
-			int starX = rand() % 1500 + 20;
-			int starY = rand() % 1500 + 20;
-			for (int i = 0; i < TOTAL_TILES; ++i)
-			{
-				if (starX > tileSet[i]->getX() && starX < tileSet[i]->getX() + tileSet[i]->getW() && starY > tileSet[i]->getY() && starY < tileSet[i]->getY() + tileSet[i]->getH())
-				{
-					if (tileSet[i]->getType() != 2)
-					{
-						starX = rand() % 1500 + 20;
-						starY = rand() % 1500 + 20;
-						continue;
-					}
-					
-					starX = tileSet[i]->getX() + 20;
-					starY = tileSet[i]->getY() + 20;
-				}
-			}
-
-			Sprite star(2, 0, 0, starX, starY, gStarTexture.getWidth(), gStarTexture.getHeight(), 5.0f, 0.5f);
-			sprites.push_back(&circle);
-			sprites.push_back(&square);
-			sprites.push_back(&star);
+			
+			sprites.push_back(&character);
 
 			//Create level camera
-			//SDL_Rect camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 			Camera cam(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 			//While application is running
@@ -336,56 +295,22 @@ int main(int argc, char* args[])
 					}
 					//Handle input for the dot
 					sprites.at(0)->handleEvent(e);
-					sprites.at(1)->handleEvent(e);
 				}
 
 				//Move the dot
 				sprites.at(0)->move(LEVEL_WIDTH, LEVEL_HEIGHT);
-				sprites.at(1)->move(LEVEL_WIDTH, LEVEL_HEIGHT);
-				//sprite1.setCamera(camera, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
-				cam.move(circle, square, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
+				cam.move(character, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
 
 				//Check collisions
-				bool levelComplete;
-
 				for (int i = 0; i < TOTAL_TILES; ++i)
 				{
-					if (tileSet[i]->getType() == 1)
+					if (tileSet[i]->getType() != 0)
 					{
 						tileSet[i]->checkCollision(sprites);
 					}
 				}
 
-				for (auto& s : sprites)
-				{
-					 levelComplete = s->checkCollision(sprites, LEVEL_WIDTH, LEVEL_HEIGHT);
-
-					 if (levelComplete)
-					 {
-						 int starX = rand() % 1500 + 20;
-						 int starY = rand() % 1500 + 20;
-
-						 for (int i = 0; i < TOTAL_TILES; ++i)
-						 {
-							 if (starX > tileSet[i]->getX() && starX < tileSet[i]->getX() + tileSet[i]->getW() && starY > tileSet[i]->getY() && starY < tileSet[i]->getY() + tileSet[i]->getH())
-							 {
-								 if (tileSet[i]->getType() != 2)
-								 {
-									 starX = rand() % 1500 + 20;
-									 starY = rand() % 1500 + 20;
-									 continue;
-								 }
-
-								 starX = tileSet[i]->getX() + 20;
-								 starY = tileSet[i]->getY() + 20;
-							 }
-						 }
-
-						 sprites.at(0)->setPosition(Vector(rand() % 1500 + 30, rand() % 1500 + 30));
-						 sprites.at(1)->setPosition(Vector(rand() % 1500 + 30, rand() % 1500 + 30));
-						 sprites.at(2)->setPosition(Vector(starX, starY));
-					 }
-				}
+				sprites.at(0)->checkCollision(sprites, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 				//Clear screen
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
@@ -398,9 +323,7 @@ int main(int argc, char* args[])
 				}
 
 				//Render objects
-				sprites.at(2)->render(gRenderer, cam, &gStarTexture);
-				sprites.at(1)->render(gRenderer, cam, &gSquareTexture);
-				sprites.at(0)->render(gRenderer, cam, &gCircleTexture);
+				sprites.at(0)->render(gRenderer, cam, &gCharacterTexture);
 
 				//Update screen
 				SDL_RenderPresent(gRenderer);
