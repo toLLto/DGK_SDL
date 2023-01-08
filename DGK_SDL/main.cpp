@@ -310,7 +310,7 @@ int main(int argc, char* args[])
 					}
 				}
 
-				sprites.at(0)->checkCollision(sprites, SCREEN_WIDTH, SCREEN_HEIGHT);
+				sprites.at(0)->checkCollision(sprites, LEVEL_WIDTH, LEVEL_HEIGHT);
 
 				//Clear screen
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
