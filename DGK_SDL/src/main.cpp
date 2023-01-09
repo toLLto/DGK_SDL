@@ -104,21 +104,21 @@ bool loadMedia(Tile* level[], Tile* fore[], Tile* back[])
 	bool success = true;
 
 	//Load sprite texture
-	if (!gCharacterTexture.loadFromFile("Character.png", gRenderer))
+	if (!gCharacterTexture.loadFromFile("./res/Character.png", gRenderer))
 	{
 		printf("Failed to load character texture!\n");
 		success = false;
 	}
 
 	//Load tile texture
-	if (!gTileTexture.loadFromFile("DGK_sprite_sheet.png", gRenderer))
+	if (!gTileTexture.loadFromFile("./res/DGK_sprite_sheet.png", gRenderer))
 	{
 		printf("Failed to load sprite sheet!\n");
 		success = false;
 	}
 
 	//Load tile maps
-	if (!setTiles(level, "level.map") || !setTiles(fore, "foreground.map") || !setTiles(back, "background.map"))
+	if (!setTiles(level, "./res/level.map") || !setTiles(fore, "./res/foreground.map") || !setTiles(back, "./res/background.map"))
 	{
 		printf("Failed to load tile sets!\n");
 		success = false;
