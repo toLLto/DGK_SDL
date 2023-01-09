@@ -22,13 +22,13 @@ const int SCREEN_HEIGHT = 720;
 bool init();
 
 //Loads media
-bool loadMedia(Tile* tiles[]);
+bool loadMedia(Tile* level[], Tile* fore[], Tile* back[]);
 
 //Sets tiles from tile map
-bool setTiles(Tile* tiles[]);
+bool setTiles(Tile* tiles[], std::string fileName);
 
 //Frees media and shuts down SDL
-void close(Tile* tiles[]);
+void close(Tile* level[], Tile* fore[], Tile* back[]);
 
 //The window we'll be rendering to
 SDL_Window* gWindow = NULL;
@@ -98,7 +98,7 @@ bool init()
 	return success;
 }
 
-bool loadMedia(Tile* tiles[])
+bool loadMedia(Tile* level[], Tile* fore[], Tile* back[])
 {
 	//Loading success flag
 	bool success = true;
@@ -117,25 +117,37 @@ bool loadMedia(Tile* tiles[])
 		success = false;
 	}
 
-	//Load tile map
-	if (!setTiles(tiles))
+	//Load tile maps
+	if (!setTiles(level, "level.map") || !setTiles(fore, "foreground.map") || !setTiles(back, "background.map"))
 	{
-		printf("Failed to load tile set!\n");
+		printf("Failed to load tile sets!\n");
 		success = false;
 	}
 
 	return success;
 }
 
-void close(Tile* tiles[])
+void close(Tile* level[], Tile* fore[], Tile* back[])
 {
 	//Deallocate tiles
 	for (int i = 0; i < TOTAL_TILES; ++i)
 	{
-		if (tiles[i] != NULL)
+		if (level[i] != NULL)
 		{
-			delete tiles[i];
-			tiles[i] = NULL;
+			delete level[i];
+			level[i] = NULL;
+		}
+
+		if (fore[i] != NULL)
+		{
+			delete fore[i];
+			fore[i] = NULL;
+		}
+
+		if (back[i] != NULL)
+		{
+			delete back[i];
+			back[i] = NULL;
 		}
 	}
 
@@ -154,7 +166,7 @@ void close(Tile* tiles[])
 	SDL_Quit();
 }
 
-bool setTiles(Tile* tiles[])
+bool setTiles(Tile* tiles[], std::string fileName)
 {
 	//Success flag
 	bool tilesLoaded = true;
@@ -163,7 +175,7 @@ bool setTiles(Tile* tiles[])
 	int x = 0, y = 0;
 
 	//Open the map
-	std::ifstream map("test.map");
+	std::ifstream map(fileName);
 
 	//If the map couldn't be loaded
 	if (map.fail())
@@ -236,6 +248,26 @@ bool setTiles(Tile* tiles[])
 			gTileClips[TILE_2].y = 32;
 			gTileClips[TILE_2].w = TILE_WIDTH;
 			gTileClips[TILE_2].h = TILE_HEIGHT;
+
+			gTileClips[TILE_3].x = 96;
+			gTileClips[TILE_3].y = 32;
+			gTileClips[TILE_3].w = TILE_WIDTH;
+			gTileClips[TILE_3].h = TILE_HEIGHT;
+
+			gTileClips[TILE_4].x = 0;
+			gTileClips[TILE_4].y = 64;
+			gTileClips[TILE_4].w = TILE_WIDTH;
+			gTileClips[TILE_4].h = TILE_HEIGHT;
+
+			gTileClips[TILE_5].x = 32;
+			gTileClips[TILE_5].y = 64;
+			gTileClips[TILE_5].w = TILE_WIDTH;
+			gTileClips[TILE_5].h = TILE_HEIGHT;
+
+			gTileClips[TILE_6].x = 64;
+			gTileClips[TILE_6].y = 64;
+			gTileClips[TILE_6].w = TILE_WIDTH;
+			gTileClips[TILE_6].h = TILE_HEIGHT;
 		}
 	}
 
@@ -256,10 +288,12 @@ int main(int argc, char* args[])
 	else
 	{
 		//The level tiles
-		Tile* tileSet[TOTAL_TILES];
+		Tile* levelTileSet[TOTAL_TILES];
+		Tile* foregroundTileSet[TOTAL_TILES];
+		Tile* backgroundTileSet[TOTAL_TILES];
 
 		//Load media
-		if (!loadMedia(tileSet))
+		if (!loadMedia(levelTileSet, foregroundTileSet, backgroundTileSet))
 		{
 			printf("Failed to load media!\n");
 		}
@@ -304,9 +338,9 @@ int main(int argc, char* args[])
 				//Check collisions
 				for (int i = 0; i < TOTAL_TILES; ++i)
 				{
-					if (tileSet[i]->getType() != 0)
+					if (levelTileSet[i]->getType() != 0)
 					{
-						tileSet[i]->checkCollision(sprites);
+						levelTileSet[i]->checkCollision(sprites);
 					}
 				}
 
@@ -316,10 +350,22 @@ int main(int argc, char* args[])
 				SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 				SDL_RenderClear(gRenderer);
 
+				//Render background
+				for (int i = 0; i < TOTAL_TILES; ++i)
+				{
+					backgroundTileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips);
+				}
+
+				//Render foreground
+				for (int i = 0; i < TOTAL_TILES; ++i)
+				{
+					foregroundTileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips);
+				}
+
 				//Render level
 				for (int i = 0; i < TOTAL_TILES; ++i)
 				{
-					tileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips);
+					levelTileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips);
 				}
 
 				//Render objects
@@ -331,7 +377,7 @@ int main(int argc, char* args[])
 		}
 		
 		//Free resources and close SDL
-		close(tileSet);
+		close(levelTileSet, foregroundTileSet, backgroundTileSet);
 	}
 
 	return 0;

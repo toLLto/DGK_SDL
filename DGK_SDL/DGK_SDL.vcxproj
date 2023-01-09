@@ -161,8 +161,9 @@
     <ClInclude Include="Vector.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="map.map" />
-    <None Include="test.map" />
+    <None Include="background.map" />
+    <None Include="foreground.map" />
+    <None Include="level.map" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Character.png" />

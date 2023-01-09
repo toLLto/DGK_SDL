@@ -64,10 +64,13 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="map.map">
+    <None Include="background.map">
       <Filter>Resource Files</Filter>
     </None>
-    <None Include="test.map">
+    <None Include="foreground.map">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="level.map">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>
