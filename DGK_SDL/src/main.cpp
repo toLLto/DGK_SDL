@@ -234,33 +234,33 @@ bool setTiles(Tile* tiles[], std::string fileName)
 		//Clip the sprite sheet
 		if (tilesLoaded)
 		{
-			gTileClips[TILE_BLANK].x = 0;
-			gTileClips[TILE_BLANK].y = 32;
+			gTileClips[TILE_BLANK].x = 32;
+			gTileClips[TILE_BLANK].y = 0;
 			gTileClips[TILE_BLANK].w = TILE_WIDTH;
 			gTileClips[TILE_BLANK].h = TILE_HEIGHT;
 
-			gTileClips[TILE_1].x = 32;
+			gTileClips[TILE_1].x = 0;
 			gTileClips[TILE_1].y = 32;
 			gTileClips[TILE_1].w = TILE_WIDTH;
 			gTileClips[TILE_1].h = TILE_HEIGHT;
 
-			gTileClips[TILE_2].x = 64;
-			gTileClips[TILE_2].y = 32;
+			gTileClips[TILE_2].x = 0;
+			gTileClips[TILE_2].y = 64;
 			gTileClips[TILE_2].w = TILE_WIDTH;
 			gTileClips[TILE_2].h = TILE_HEIGHT;
 
-			gTileClips[TILE_3].x = 96;
+			gTileClips[TILE_3].x = 32;
 			gTileClips[TILE_3].y = 32;
 			gTileClips[TILE_3].w = TILE_WIDTH;
 			gTileClips[TILE_3].h = TILE_HEIGHT;
 
-			gTileClips[TILE_4].x = 0;
+			gTileClips[TILE_4].x = 32;
 			gTileClips[TILE_4].y = 64;
 			gTileClips[TILE_4].w = TILE_WIDTH;
 			gTileClips[TILE_4].h = TILE_HEIGHT;
 
-			gTileClips[TILE_5].x = 32;
-			gTileClips[TILE_5].y = 64;
+			gTileClips[TILE_5].x = 64;
+			gTileClips[TILE_5].y = 32;
 			gTileClips[TILE_5].w = TILE_WIDTH;
 			gTileClips[TILE_5].h = TILE_HEIGHT;
 
@@ -268,6 +268,16 @@ bool setTiles(Tile* tiles[], std::string fileName)
 			gTileClips[TILE_6].y = 64;
 			gTileClips[TILE_6].w = TILE_WIDTH;
 			gTileClips[TILE_6].h = TILE_HEIGHT;
+
+			gTileClips[TILE_7].x = 96;
+			gTileClips[TILE_7].y = 32;
+			gTileClips[TILE_7].w = TILE_WIDTH;
+			gTileClips[TILE_7].h = TILE_HEIGHT;
+
+			gTileClips[TILE_8].x = 96;
+			gTileClips[TILE_8].y = 64;
+			gTileClips[TILE_8].w = TILE_WIDTH;
+			gTileClips[TILE_8].h = TILE_HEIGHT;
 		}
 	}
 
@@ -308,7 +318,7 @@ int main(int argc, char* args[])
 			srand(time(nullptr));
 
 			// Sprites
-			Sprite character(0, 1, 2, 64, 64, gCharacterTexture.getWidth(), gCharacterTexture.getHeight(), 5.0f, 0.5f);
+			Sprite character(0, 1, 2, 64, 832, gCharacterTexture.getWidth(), gCharacterTexture.getHeight(), 5.0f, 0.5f);
 
 			
 			sprites.push_back(&character);
