@@ -14,10 +14,10 @@ Tile::Tile(int x, int y, int tileType)
 	mType = tileType;
 }
 
-void Tile::render(SDL_Renderer* gRenderer, Camera& camera, Texture* gTileTexture, SDL_Rect* gTileClips)
+void Tile::render(SDL_Renderer* gRenderer, Camera& camera, Texture* gTileTexture, SDL_Rect* gTileClips, float n)
 {
 	//Show the tile
-	gTileTexture->render(gRenderer, this->x - camera.camera.x, this->y - camera.camera.y, camera.getScale(), &gTileClips[mType]);
+	gTileTexture->render(gRenderer, this->x - camera.camera.x * n, this->y - camera.camera.y * (n / 2), camera.getScale(), &gTileClips[mType]);
 }
 
 int Tile::clamp(int x, int min, int max)

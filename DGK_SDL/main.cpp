@@ -353,19 +353,19 @@ int main(int argc, char* args[])
 				//Render background
 				for (int i = 0; i < TOTAL_TILES; ++i)
 				{
-					backgroundTileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips);
+					backgroundTileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips, 0.5);
 				}
 
 				//Render foreground
 				for (int i = 0; i < TOTAL_TILES; ++i)
 				{
-					foregroundTileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips);
+					foregroundTileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips, 0.75);
 				}
 
 				//Render level
 				for (int i = 0; i < TOTAL_TILES; ++i)
 				{
-					levelTileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips);
+					levelTileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips, 1.0);
 				}
 
 				//Render objects
