@@ -48,7 +48,7 @@ public:
 	void handleEvent(SDL_Event& e);
 
 	//Moves the sprite
-	void move(double deltaTime);
+	void move();
 
 	//Shows the sprite on the screen
 	void render(SDL_Renderer* gRenderer, Camera& cam, Texture* gSpriteTexture);
@@ -73,7 +73,6 @@ public:
 private:
 	Vector position;
 	Vector velocity;
-	Vector acceleration;
 	float v0, g;
 
 	bool direction;

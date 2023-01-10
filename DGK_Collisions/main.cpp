@@ -185,7 +185,7 @@ int main(int argc, char* args[])
 			{
 				Uint64 previous = perf_counter;
 				perf_counter = SDL_GetPerformanceCounter();
-				deltaTime = static_cast<double>((perf_counter - previous) * 1000 / static_cast<double>(SDL_GetPerformanceFrequency()));
+				deltaTime = static_cast<double>((perf_counter - previous) * 1000 / static_cast<double>(SDL_GetPerformanceFrequency()));;
 
 				//Handle events on queue
 				while (SDL_PollEvent(&e) != 0)

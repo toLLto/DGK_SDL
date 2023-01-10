@@ -318,7 +318,7 @@ int main(int argc, char* args[])
 			srand(time(nullptr));
 
 			// Sprites
-			Sprite character(0, 1, 2, 64, 832, gCharacterTexture.getWidth(), gCharacterTexture.getHeight(), 3.0f, 1.f, 1.f, 1.f, 0.5f);
+			Sprite character(0, 1, 2, 64, 832, gCharacterTexture.getWidth(), gCharacterTexture.getHeight(), 5.0f, 0.5f);
 
 			
 			sprites.push_back(&character);
@@ -326,19 +326,12 @@ int main(int argc, char* args[])
 			//Create level camera
 			Camera cam(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
-			Uint64 perf_counter = SDL_GetPerformanceCounter();
-			double deltaTime;
-
 			float foreN = 0.8f;
 			float backN = 0.5f;
 
 			//While application is running
 			while (!quit)
 			{
-				Uint64 previous = perf_counter;
-				perf_counter = SDL_GetPerformanceCounter();
-				deltaTime = static_cast<double>((perf_counter - previous) * 1000 / static_cast<double>(SDL_GetPerformanceFrequency()));
-
 				//Handle events on queue
 				while (SDL_PollEvent(&e) != 0)
 				{
@@ -380,8 +373,7 @@ int main(int argc, char* args[])
 				}
 
 				//Move the dot
-				sprites.at(0)->move(deltaTime);
-				//sprites.at(0)->jump(deltaTime);
+				sprites.at(0)->move();
 				cam.move(character, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
 
 				//Check collisions
