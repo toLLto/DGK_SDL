@@ -9,6 +9,8 @@ Sprite::Sprite(unsigned int _id, unsigned int _mt, unsigned int _ct, unsigned in
 	sprite_vel = _vel;
 	this->v0 = 2 * _h * (_vx / _xh);
 	this->g = -2 * _h * ((_vx * _vx) / (_xh * _xh));
+	SDL_Log("Parameter update: current v0: %f and g: %f", v0, g);
+	
 	sprite_smooth = _smooth;
 	this->id = _id;
 
@@ -19,6 +21,7 @@ Sprite::Sprite(unsigned int _id, unsigned int _mt, unsigned int _ct, unsigned in
 
 	this->position = Vector(_x, _y);
 	this->velocity = Vector(0, 0);
+	this->acceleration = Vector(0, -this->g);
 
 	direction = false;
 }
@@ -34,20 +37,21 @@ void Sprite::handleEvent(SDL_Event& e)
 			switch (e.key.keysym.sym)
 			{
 			case SDLK_w:
-				velocity.y -= sprite_vel;
+				//velocity.y -= sprite_vel;
+				velocity.y = v0;
 				//SDL_Log("W was pressed");
 				break;
 			case SDLK_s:
-				velocity.y += sprite_vel;
+				//velocity.y += sprite_vel;
 				//SDL_Log("S was pressed");
 				break;
 			case SDLK_a:
-				velocity.x -= sprite_vel;
+				velocity.x = -sprite_vel;
 				//SDL_Log("A was pressed");
 				direction = true;
 				break;
 			case SDLK_d:
-				velocity.x += sprite_vel;
+				velocity.x = sprite_vel;
 				//SDL_Log("D was pressed");
 				direction = false;
 				break;
@@ -60,11 +64,11 @@ void Sprite::handleEvent(SDL_Event& e)
 			switch (e.key.keysym.sym)
 			{
 			case SDLK_w:
-				velocity.y = 0;
+				//velocity.y = 0;
 				//SDL_Log("W was released");
 				break;
 			case SDLK_s:
-				velocity.y = 0;
+				//velocity.y = 0;
 				//SDL_Log("S was released");
 				break;
 			case SDLK_a:
@@ -148,9 +152,10 @@ void Sprite::handleEvent(SDL_Event& e)
 	}
 }
 
-void Sprite::move()
+void Sprite::move(double deltaTime)
 {
-	position += velocity;
+	position += velocity * deltaTime + (acceleration * deltaTime * deltaTime / 2);
+	velocity += acceleration * deltaTime;
 }
 
 void Sprite::render(SDL_Renderer* gRenderer, Camera& cam, Texture* gSpriteTexture)
@@ -366,6 +371,8 @@ void Sprite::updateParameters(float _h, float _vx, float _xh)
 {
 	this->v0 = 2 * _h * (_vx / _xh);
 	this->g = -2 * _h * ((_vx * _vx) / (_xh * _xh));
+	this->acceleration.y = -this->g;
+	SDL_Log("Parameter update: current v0: %f and g: %f", v0, g);
 }
 
 Vector Sprite::getPosition()
