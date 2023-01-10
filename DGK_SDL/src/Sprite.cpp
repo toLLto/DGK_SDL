@@ -1,14 +1,12 @@
 #include "Sprite.h"
 
-Sprite::Sprite(unsigned int _id, unsigned int _mt, unsigned int _ct, unsigned int _x, unsigned int _y, unsigned int _width, unsigned int _height, float _vel, float _h, float _vx, float _xh, float _smooth)
+Sprite::Sprite(unsigned int _id, unsigned int _mt, unsigned int _ct, unsigned int _x, unsigned int _y, unsigned int _width, unsigned int _height, float _vel, float _smooth)
 {
 	movement_type = _mt;
 	collider_type = _ct;
 	sprite_width = _width;
 	sprite_height = _height;
 	sprite_vel = _vel;
-	this->v0 = 2 * _h * (_vx / _xh);
-	this->g = -2 * _h * ((_vx * _vx) / (_xh * _xh));
 	sprite_smooth = _smooth;
 	this->id = _id;
 
@@ -148,7 +146,7 @@ void Sprite::handleEvent(SDL_Event& e)
 	}
 }
 
-void Sprite::move()
+void Sprite::move(const int width, const int height)
 {
 	position += velocity;
 }
@@ -360,12 +358,6 @@ bool Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, cons
 			this->velocity.y = 0;
 		}
 	}
-}
-
-void Sprite::updateParameters(float _h, float _vx, float _xh)
-{
-	this->v0 = 2 * _h * (_vx / _xh);
-	this->g = -2 * _h * ((_vx * _vx) / (_xh * _xh));
 }
 
 Vector Sprite::getPosition()

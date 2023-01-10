@@ -373,7 +373,7 @@ int main(int argc, char* args[])
 				}
 
 				//Move the dot
-				sprites.at(0)->move();
+				sprites.at(0)->move(LEVEL_WIDTH, LEVEL_HEIGHT);
 				cam.move(character, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
 
 				//Check collisions

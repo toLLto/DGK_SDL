@@ -42,13 +42,13 @@ public:
 	// Smoothing
 	float sprite_smooth;
 
-	Sprite(unsigned int _id, unsigned int _mt, unsigned int _ct, unsigned int _x, unsigned int _y, unsigned int _width, unsigned int _height, float _vel, float _h, float _vx, float _xh, float _smooth);
+	Sprite(unsigned int _id, unsigned int mt, unsigned int ct, unsigned int x, unsigned int y, unsigned int width, unsigned int height, float vel, float smooth);
 
 	//Takes key presses and adjusts the sprite's velocity
 	void handleEvent(SDL_Event& e);
 
 	//Moves the sprite
-	void move();
+	void move(const int width, const int height);
 
 	//Shows the sprite on the screen
 	void render(SDL_Renderer* gRenderer, Camera& cam, Texture* gSpriteTexture);
@@ -57,9 +57,6 @@ public:
 
 	//Checks if this circle collides with another
 	bool checkCollision(std::vector<Sprite*>& sprites, const int width, const int height);
-
-	// Update jump parameters
-	void updateParameters(float _h, float _vx, float _xh);
 
 	Vector getPosition();
 	Vector getVelocity();
@@ -73,8 +70,6 @@ public:
 private:
 	Vector position;
 	Vector velocity;
-	float v0, g;
-
 	bool direction;
 	float radius;
 	unsigned int id;
