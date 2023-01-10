@@ -326,6 +326,9 @@ int main(int argc, char* args[])
 			//Create level camera
 			Camera cam(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT);
 
+			float foreN = 0.8f;
+			float backN = 0.5f;
+
 			//While application is running
 			while (!quit)
 			{
@@ -337,6 +340,34 @@ int main(int argc, char* args[])
 					{
 						quit = true;
 					}
+
+					if (e.type == SDL_KEYDOWN)
+					{
+						if (e.key.keysym.sym == SDLK_r)
+						{
+							SDL_Log("Foreground factor changed to %f", foreN);
+							foreN += 0.1f;
+						}
+
+						if (e.key.keysym.sym == SDLK_f)
+						{
+							SDL_Log("Foreground factor changed to %f", foreN);
+							foreN -= 0.1f;
+						}
+
+						if (e.key.keysym.sym == SDLK_t)
+						{
+							SDL_Log("Background factor changed to %f", backN);
+							backN += 0.1f;
+						}
+
+						if (e.key.keysym.sym == SDLK_g)
+						{
+							SDL_Log("Background factor changed to %f", backN);
+							backN -= 0.1f;
+						}
+					}
+
 					//Handle input for the dot
 					sprites.at(0)->handleEvent(e);
 				}
@@ -363,13 +394,13 @@ int main(int argc, char* args[])
 				//Render background
 				for (int i = 0; i < TOTAL_TILES; ++i)
 				{
-					backgroundTileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips, 0.5);
+					backgroundTileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips, backN);
 				}
 
 				//Render foreground
 				for (int i = 0; i < TOTAL_TILES; ++i)
 				{
-					foregroundTileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips, 0.75);
+					foregroundTileSet[i]->render(gRenderer, cam, &gTileTexture, gTileClips, foreN);
 				}
 
 				//Render level
