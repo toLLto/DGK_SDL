@@ -345,26 +345,26 @@ int main(int argc, char* args[])
 					{
 						if (e.key.keysym.sym == SDLK_r)
 						{
-							SDL_Log("Foreground factor changed to %f", foreN);
 							foreN += 0.1f;
+							SDL_Log("Foreground factor changed to %f", foreN);
 						}
 
 						if (e.key.keysym.sym == SDLK_f)
 						{
-							SDL_Log("Foreground factor changed to %f", foreN);
 							foreN -= 0.1f;
+							SDL_Log("Foreground factor changed to %f", foreN);
 						}
 
 						if (e.key.keysym.sym == SDLK_t)
 						{
-							SDL_Log("Background factor changed to %f", backN);
 							backN += 0.1f;
+							SDL_Log("Background factor changed to %f", backN);
 						}
 
 						if (e.key.keysym.sym == SDLK_g)
 						{
-							SDL_Log("Background factor changed to %f", backN);
 							backN -= 0.1f;
+							SDL_Log("Background factor changed to %f", backN);
 						}
 					}
 
