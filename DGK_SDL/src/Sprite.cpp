@@ -1,22 +1,26 @@
 #include "Sprite.h"
 
-Sprite::Sprite(unsigned int _id, unsigned int _mt, unsigned int _ct, unsigned int _x, unsigned int _y, unsigned int _width, unsigned int _height, float _vel, float _smooth)
+Sprite::Sprite(unsigned int id, unsigned int mt, unsigned int ct, unsigned int x, unsigned int y, unsigned int width, unsigned int height, float vel, float h, float xh, float smooth)
 {
-	movement_type = _mt;
-	collider_type = _ct;
-	sprite_width = _width;
-	sprite_height = _height;
-	sprite_vel = _vel;
-	sprite_smooth = _smooth;
-	this->id = _id;
+	this->movement_type = mt;
+	this->collider_type = ct;
+	this->sprite_width = width;
+	this->sprite_height = height;
+	this->sprite_vel = vel;
+	this->sprite_smooth = smooth;
+	this->id = id;
 
-	if (_ct != 1)
+	updateParameters(h, vel, xh);
+	SDL_Log("Parameter update: current v0: %f and g: %f", v0, g);
+
+	if (ct != 1)
 		this->radius = 0;
 	else
-		this->radius = _width / 2;
+		this->radius = width / 2;
 
-	this->position = Vector(_x, _y);
+	this->position = Vector(x, y);
 	this->velocity = Vector(0, 0);
+	this->acceleration = Vector(0, this->g);
 
 	direction = false;
 }
@@ -32,11 +36,16 @@ void Sprite::handleEvent(SDL_Event& e)
 			switch (e.key.keysym.sym)
 			{
 			case SDLK_w:
-				velocity.y -= sprite_vel;
+				if (multiJump < 2)
+				{
+					multiJump++;
+					velocity.y = v0;
+				}
 				//SDL_Log("W was pressed");
 				break;
 			case SDLK_s:
-				velocity.y += sprite_vel;
+				//velocity.y += sprite_vel;
+				this->position = Vector(64, 832);
 				//SDL_Log("S was pressed");
 				break;
 			case SDLK_a:
@@ -57,14 +66,14 @@ void Sprite::handleEvent(SDL_Event& e)
 			//Adjust the velocity
 			switch (e.key.keysym.sym)
 			{
-			case SDLK_w:
-				velocity.y = 0;
-				//SDL_Log("W was released");
-				break;
-			case SDLK_s:
-				velocity.y = 0;
-				//SDL_Log("S was released");
-				break;
+			//case SDLK_w:
+			//	velocity.y = 0;
+			//	//SDL_Log("W was released");
+			//	break;
+			//case SDLK_s:
+			//	velocity.y = 0;
+			//	//SDL_Log("S was released");
+			//	break;
 			case SDLK_a:
 				velocity.x = 0;
 				//SDL_Log("A was released");
@@ -146,9 +155,37 @@ void Sprite::handleEvent(SDL_Event& e)
 	}
 }
 
-void Sprite::move(const int width, const int height)
+void Sprite::move(double deltaTime)
 {
-	position += velocity;
+	position.x += velocity.x;
+
+	if (this->onGround)
+	{
+		velocity.y = this->v0;
+	}
+	else if (!onGround)
+	{
+		velocity.y += acceleration.y * deltaTime;
+	}
+
+	if (!onGround)
+	{
+		position.y += velocity.y * deltaTime + acceleration.y * 0.5 * deltaTime * deltaTime;
+	}
+
+	acceleration.y = g;
+	onGround = false;
+	timeSinceLastJump += deltaTime;
+}
+
+void Sprite::jump(double deltaTime)
+{
+	this->position += this->velocity * deltaTime + this->acceleration * 0.5 * deltaTime * deltaTime;
+	this->velocity += this->acceleration * deltaTime;
+}
+
+void Sprite::calculatePhysics(double deltaTime)
+{
 }
 
 void Sprite::render(SDL_Renderer* gRenderer, Camera& cam, Texture* gSpriteTexture)
@@ -360,6 +397,14 @@ bool Sprite::checkCollision(std::vector<Sprite*>& sprites, const int width, cons
 	}
 }
 
+void Sprite::updateParameters(float h, float vx, float xh)
+{
+	this->v0 = -2 * h * (vx / xh);
+	this->g = 2 * h * ((vx * vx) / (xh * xh));
+	this->acceleration.y = g;
+	SDL_Log("Jump stats: [v0: %f] / [g: %f]", this->v0, this->g);
+}
+
 Vector Sprite::getPosition()
 {
 	return this->position;
@@ -368,6 +413,21 @@ Vector Sprite::getPosition()
 Vector Sprite::getVelocity()
 {
 	return this->velocity;
+}
+
+Vector Sprite::getAcceleration()
+{
+	return this->acceleration;;
+}
+
+double Sprite::getTimeSinceLastJump()
+{
+	return this->timeSinceLastJump;
+}
+
+bool Sprite::isOnGround()
+{
+	return this->onGround;
 }
 
 bool Sprite::getDirection()
@@ -393,4 +453,24 @@ void Sprite::setPosition(Vector v)
 void Sprite::setVelocity(Vector v)
 {
 	this->velocity = v;
+}
+
+void Sprite::setAcceleration(Vector v)
+{
+	this->acceleration = v;
+}
+
+void Sprite::setOnGround(bool b)
+{
+	this->onGround = b;
+}
+
+void Sprite::resetTimer()
+{
+	this->timeSinceLastJump = 0.0;
+}
+
+void Sprite::resetMultiJump()
+{
+	this->multiJump = 0;
 }

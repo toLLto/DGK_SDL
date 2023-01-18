@@ -240,42 +240,42 @@ bool setTiles(Tile* tiles[], std::string fileName)
 			gTileClips[TILE_BLANK].h = TILE_HEIGHT;
 
 			gTileClips[TILE_1].x = 0;
-			gTileClips[TILE_1].y = 32;
+			gTileClips[TILE_1].y = 64;
 			gTileClips[TILE_1].w = TILE_WIDTH;
 			gTileClips[TILE_1].h = TILE_HEIGHT;
 
 			gTileClips[TILE_2].x = 0;
-			gTileClips[TILE_2].y = 64;
+			gTileClips[TILE_2].y = 96;
 			gTileClips[TILE_2].w = TILE_WIDTH;
 			gTileClips[TILE_2].h = TILE_HEIGHT;
 
 			gTileClips[TILE_3].x = 32;
-			gTileClips[TILE_3].y = 32;
+			gTileClips[TILE_3].y = 64;
 			gTileClips[TILE_3].w = TILE_WIDTH;
 			gTileClips[TILE_3].h = TILE_HEIGHT;
 
 			gTileClips[TILE_4].x = 32;
-			gTileClips[TILE_4].y = 64;
+			gTileClips[TILE_4].y = 96;
 			gTileClips[TILE_4].w = TILE_WIDTH;
 			gTileClips[TILE_4].h = TILE_HEIGHT;
 
 			gTileClips[TILE_5].x = 64;
-			gTileClips[TILE_5].y = 32;
+			gTileClips[TILE_5].y = 64;
 			gTileClips[TILE_5].w = TILE_WIDTH;
 			gTileClips[TILE_5].h = TILE_HEIGHT;
 
 			gTileClips[TILE_6].x = 64;
-			gTileClips[TILE_6].y = 64;
+			gTileClips[TILE_6].y = 96;
 			gTileClips[TILE_6].w = TILE_WIDTH;
 			gTileClips[TILE_6].h = TILE_HEIGHT;
 
 			gTileClips[TILE_7].x = 96;
-			gTileClips[TILE_7].y = 32;
+			gTileClips[TILE_7].y = 64;
 			gTileClips[TILE_7].w = TILE_WIDTH;
 			gTileClips[TILE_7].h = TILE_HEIGHT;
 
 			gTileClips[TILE_8].x = 96;
-			gTileClips[TILE_8].y = 64;
+			gTileClips[TILE_8].y = 96;
 			gTileClips[TILE_8].w = TILE_WIDTH;
 			gTileClips[TILE_8].h = TILE_HEIGHT;
 		}
@@ -317,8 +317,11 @@ int main(int argc, char* args[])
 
 			srand(time(nullptr));
 
+			int jumpHeight = 96;
+			int jumpLength = 64;
+
 			// Sprites
-			Sprite character(0, 1, 2, 64, 832, gCharacterTexture.getWidth(), gCharacterTexture.getHeight(), 5.0f, 0.5f);
+			Sprite character(0, 1, 2, 64, 832, gCharacterTexture.getWidth(), gCharacterTexture.getHeight(), 0.5f, jumpHeight, jumpLength, 0.5f);
 
 			
 			sprites.push_back(&character);
@@ -329,9 +332,18 @@ int main(int argc, char* args[])
 			float foreN = 0.8f;
 			float backN = 0.5f;
 
+			
+
+			Uint64 perf_counter = SDL_GetPerformanceCounter();
+			double deltaTime;
+
 			//While application is running
 			while (!quit)
 			{
+				Uint64 previous = perf_counter;
+				perf_counter = SDL_GetPerformanceCounter();
+				deltaTime = static_cast<double>((perf_counter - previous) * 1000 / static_cast<double>(SDL_GetPerformanceFrequency()));
+
 				//Handle events on queue
 				while (SDL_PollEvent(&e) != 0)
 				{
@@ -343,6 +355,30 @@ int main(int argc, char* args[])
 
 					if (e.type == SDL_KEYDOWN)
 					{
+						if (e.key.keysym.sym == SDLK_1)
+						{
+							jumpHeight += 32;
+							character.updateParameters(jumpHeight, 0.5, jumpLength);
+						}
+
+						if (e.key.keysym.sym == SDLK_2)
+						{
+							jumpHeight -= 32;
+							character.updateParameters(jumpHeight, 0.5, jumpLength);
+						}
+
+						if (e.key.keysym.sym == SDLK_3)
+						{
+							jumpLength += 32;
+							character.updateParameters(jumpHeight, 0.5, jumpLength);
+						}
+
+						if (e.key.keysym.sym == SDLK_4)
+						{
+							jumpLength -= 32;
+							character.updateParameters(jumpHeight, 0.5, jumpLength);
+						}
+
 						if (e.key.keysym.sym == SDLK_r)
 						{
 							foreN += 0.1f;
@@ -373,7 +409,7 @@ int main(int argc, char* args[])
 				}
 
 				//Move the dot
-				sprites.at(0)->move(LEVEL_WIDTH, LEVEL_HEIGHT);
+				sprites.at(0)->jump(deltaTime);
 				cam.move(character, SCREEN_WIDTH, SCREEN_HEIGHT, LEVEL_WIDTH, LEVEL_HEIGHT, 0.2f);
 
 				//Check collisions

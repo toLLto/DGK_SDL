@@ -17,7 +17,10 @@ Tile::Tile(int x, int y, int tileType)
 void Tile::render(SDL_Renderer* gRenderer, Camera& camera, Texture* gTileTexture, SDL_Rect* gTileClips, float n)
 {
 	//Show the tile
-	gTileTexture->render(gRenderer, this->x - camera.camera.x * n, this->y - camera.camera.y, camera.getScale(), &gTileClips[mType]);
+	if (mType != 0)
+	{
+		gTileTexture->render(gRenderer, this->x - camera.camera.x * n, this->y - camera.camera.y, camera.getScale(), &gTileClips[mType]);
+	}
 }
 
 int Tile::clamp(int x, int min, int max)
@@ -112,9 +115,12 @@ void Tile::checkCollision(std::vector<Sprite*>& sprites)
 
 				if (left > 0 && right > 0 && top > 0 && bottom > 0)
 				{
-					SDL_Log("Square/Tile: Collision detected");
+					//SDL_Log("Square/Tile: Collision detected");
 					//SDL_Log("BEFORE SEPARATION! Tile position: (%i, %i) Sprite position: (%f, %f)", this->x, this->y, s->getPosition().x, s->getPosition().y);
-					s->setVelocity(Vector(0, 0));
+					s->setVelocity(Vector(s->getVelocity().x, 0));
+					s->resetMultiJump();
+					//s->setOnGround(true);
+					//s->resetTimer();
 
 					// Separation
 					left < right ? v.x = left : v.x = -right;
